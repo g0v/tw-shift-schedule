@@ -1,0 +1,21 @@
+{
+  "name": "tw-shift-schedule-validator",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "tape test/*.js | faucet"
+  },
+  "keywords": [],
+  "author": "Poga Po<poga.po@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "faucet": "0.0.1",
+    "tape": "^4.8.0"
+  },
+  "dependencies": {
+    "moment": "^2.20.1",
+    "moo": "^0.4.3",
+    "ramda": "^0.25.0"
+  }
+}
