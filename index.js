@@ -1,16 +1,4 @@
-const moo = require('moo')
-
-module.exports = function (schedule, context) {
-  let lexer = moo.compile({
-    comment: /#.+/,
-    // 沒加班
-    work: /(?:(?:(?:^|\.+)x.{1,718}x)|(?:^|\.+)x{1,480})/,
-    // 休息（至少 8 小時）
-    rest: /\.{480,}/,
-    // everything else is invalid
-    'invalid schedule': moo.error
-  })
-
-  // ignore all spaces within the schedule
-  return lexer.reset(schedule.replace(/\s/g, ''))
+module.exports = {
+  tokenizer: require('./tokenizer'),
+  schedule: require('./schedule')
 }

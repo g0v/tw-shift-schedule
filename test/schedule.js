@@ -1,5 +1,5 @@
 const tape = require('tape')
-const gen = require('../punch')
+const gen = require('../schedule')
 const moment = require('moment')
 
 tape('上班八小時', function (t) {
