@@ -1,6 +1,6 @@
 # 班表小幫手
 
-用 parser generator 驗證班表是否合法或過勞
+驗證班表是否合法或過勞
 
 `npm i tw-shift-schedule`
 
