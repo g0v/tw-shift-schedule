@@ -9,7 +9,7 @@
 ```javascript
 const shift = require('tw-shift-schedule')
 
-// 台鐵站長張銘元班表
+// 台鐵站長張銘元班表 from https://www.twreporter.org/a/death-of-taiwan-rail-train-conductor
 let schedule = shift.schedule([
   ['2017-12-01 09:36:00', '2017-12-01 19:44:00'],
   ['2017-12-02 05:30:00', '2017-12-02 10:14:00'],
