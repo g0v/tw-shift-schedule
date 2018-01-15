@@ -37,6 +37,32 @@ console.log(tokens) // 切出的 上班/下班區段，若有不合法會回傳 
 
 `test` 資料夾下有其他範例
 
+## API
+
+```javascript
+const shift = require('shift')
+```
+
+#### `let schedule = shift.schedule(times, [opts])`
+
+ 從給定的時間 `times` 建立一個班表資料。細節請參考 **Design** 段落
+
+ ```
+ * times: 二維陣列，每個子元素為「上班時間」與「下班時間」的 pair。如：`[['2018-01-01 08:00:00', '2018-01-01 18:00:00']]`
+ * opts:
+   * format: 時間的格式，預設為 ISO 8601。格式參考 https://momentjs.com/docs/#/parsing/string/
+   * before: 隱藏工時-前。ex. '30 minutes'
+   * after: 隱藏工時-後。ex. '30 minutes'
+ ```
+
+#### `let tokens = shift.tokenizer(schedule)`
+
+解析班表，試著切出合法的工作/休息時段。如果嘗試失敗，會回傳 'invalid' 並且指出錯誤的位置。
+
+```
+* schedule: shift.schedule 建立的班表資料。
+```
+
 ## Design
 
 此套件將班表編碼成如下格式：
@@ -49,6 +75,8 @@ xxxxxxxxxx xxxxxxxxx .....xxxxx .....
 * `.` 代表一分鐘的休息時間
 
 於是便可用 `tokenizer/lexer` 驗證基本的班表正確性，可參考 `tokenizer.js`。
+
+編碼中的空白會被忽略，可用 `#` 寫註解。
 
 ## License
 
