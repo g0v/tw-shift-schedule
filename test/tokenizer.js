@@ -3,6 +3,7 @@ const validate = require('../tokenizer')
 
 tape('line comment', function (t) {
   let schedule = '# hello'
+  schedule = { body: schedule }
 
   let tokens = simplify(getTokens(validate(schedule)))
   t.same(tokens, [])
@@ -14,6 +15,7 @@ tape('multi-line with comment', function (t) {
   # hello
   xxxxx xxx
   `
+  schedule = { body: schedule }
 
   let tokens = simplify(getTokens(validate(schedule)))
   t.same(tokens, [
@@ -24,6 +26,7 @@ tape('multi-line with comment', function (t) {
 
 tape('inline comment', function (t) {
   let schedule = 'xxxxxxxx # hello'
+  schedule = { body: schedule }
 
   let tokens = simplify(getTokens(validate(schedule)))
   t.same(tokens, [
@@ -34,6 +37,7 @@ tape('inline comment', function (t) {
 
 tape('一班八小時', function (t) {
   let schedule = 'x'.repeat(8 * 60)
+  schedule = { body: schedule }
 
   let tokens = simplify(getTokens(validate(schedule)))
   t.same(tokens, [
@@ -44,6 +48,7 @@ tape('一班八小時', function (t) {
 
 tape('一班 12 小時', function (t) {
   let schedule = 'x'.repeat(12 * 60)
+  schedule = { body: schedule }
 
   let tokens = simplify(getTokens(validate(schedule)))
   t.same(tokens, [
@@ -54,6 +59,7 @@ tape('一班 12 小時', function (t) {
 
 tape('一班 12 小時又一分鐘', function (t) {
   let schedule = 'x'.repeat(12 * 60) + 'x'
+  schedule = { body: schedule }
 
   let tokens = simplify(getTokens(validate(schedule)))
   t.same(tokens, [
@@ -65,6 +71,7 @@ tape('一班 12 小時又一分鐘', function (t) {
 
 tape('一班 12 小時，中間有休息', function (t) {
   let schedule = 'x'.repeat(5 * 60) + '.'.repeat(2 * 60) + 'x'.repeat(5 * 60)
+  schedule = { body: schedule }
 
   let tokens = simplify(getTokens(validate(schedule)))
   t.same(tokens, [
@@ -75,6 +82,7 @@ tape('一班 12 小時，中間有休息', function (t) {
 
 tape('一班 12 小時，前 8 休 2 後 2', function (t) {
   let schedule = 'x'.repeat(8 * 60) + '.'.repeat(2 * 60) + 'x'.repeat(2 * 60)
+  schedule = { body: schedule }
 
   let tokens = simplify(getTokens(validate(schedule)))
   t.same(tokens, [
@@ -85,6 +93,7 @@ tape('一班 12 小時，前 8 休 2 後 2', function (t) {
 
 tape('一班 作 8 休 7 作 8', function (t) {
   let schedule = 'x'.repeat(8 * 60) + '.'.repeat(7 * 60) + 'x'.repeat(8 * 60)
+  schedule = { body: schedule }
 
   let tokens = simplify(getTokens(validate(schedule)))
   t.same(tokens, [
@@ -96,6 +105,7 @@ tape('一班 作 8 休 7 作 8', function (t) {
 
 tape('兩班 作 8 休 8 作 8', function (t) {
   let schedule = 'x'.repeat(8 * 60) + '.'.repeat(8 * 60) + 'x'.repeat(8 * 60)
+  schedule = { body: schedule }
 
   let tokens = simplify(getTokens(validate(schedule)))
   t.same(tokens, [
@@ -108,6 +118,7 @@ tape('兩班 作 8 休 8 作 8', function (t) {
 
 tape('充足休息', function (t) {
   let schedule = '.'.repeat(8 * 60)
+  schedule = { body: schedule }
 
   let tokens = simplify(getTokens(validate(schedule)))
   t.same(tokens, [
@@ -118,6 +129,7 @@ tape('充足休息', function (t) {
 
 tape('休息不足 8 小時', function (t) {
   let schedule = '.'.repeat(8 * 60 - 1)
+  schedule = { body: schedule }
 
   let tokens = simplify(getTokens(validate(schedule)))
   t.same(tokens, [

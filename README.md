@@ -10,7 +10,7 @@
 const shift = require('tw-shift-schedule')
 
 // 台鐵站長張銘元班表 from https://www.twreporter.org/a/death-of-taiwan-rail-train-conductor
-let schedule = shift.schedule([
+let schedule = new shift.Schedule([
   ['2017-12-01 09:36:00', '2017-12-01 19:44:00'],
   ['2017-12-02 05:30:00', '2017-12-02 10:14:00'],
   ['2017-12-04 16:16:00', '2017-12-04 21:04:00'],
@@ -43,7 +43,7 @@ console.log(tokens) // 切出的 上班/下班區段，若有不合法會回傳 
 const shift = require('shift')
 ```
 
-#### `let schedule = shift.schedule(times, [opts])`
+#### `let schedule = new shift.Schedule(times, [opts])`
 
  從給定的時間 `times` 建立一個班表資料。細節請參考 **Design** 段落
 

@@ -1,10 +1,10 @@
 const tape = require('tape')
-const schedule = require('../schedule')
+const Schedule = require('../schedule')
 const tokenizer = require('../tokenizer')
 const moment = require('moment')
 
 tape('台鐵班表, 不包含整備時間、隱形工時', function (t) {
-  let s = schedule([
+  let s = new Schedule([
     ['2017-12-01 09:36:00', '2017-12-01 19:44:00'],
     ['2017-12-02 05:30:00', '2017-12-02 10:14:00'],
     ['2017-12-04 16:16:00', '2017-12-04 21:04:00'],

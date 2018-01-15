@@ -1,11 +1,13 @@
 // generate shift schedule from punch time
 const moment = require('moment')
 
-module.exports = function (punches, opts) {
+function Schedule (punches, opts) {
+  this.body = ''
+
   if (!opts) opts = {}
   if (!opts.format) opts.format = moment.ISO_8601
 
-  let schedule = ''
+  let body = ''
   punches.forEach((p, i) => {
     let start = moment(p[0], opts.format)
     if (opts.before) {
@@ -22,18 +24,20 @@ module.exports = function (punches, opts) {
       ).asMinutes()
 
       for (let j = 0; j < restDuration; j++) {
-        schedule += '.'
+        body += '.'
       }
     }
 
     let duration = moment.duration(end.diff(start)).asMinutes()
     for (let j = 0; j < duration; j++) {
-      schedule += 'x'
+      body += 'x'
     }
   })
 
-  return schedule
+  this.body = body
 }
+
+module.exports = Schedule
 
 function parseTimeOpt (opt) {
   let o = opt.split(' ')

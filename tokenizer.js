@@ -9,11 +9,12 @@ module.exports = function (schedule, context) {
     // everything else is invalid
     invalid: moo.error
   })
+  let body = schedule.body
 
-  schedule += '\n'
+  body += '\n'
   // remove comments
-  schedule = schedule.replace(/#.+\n/, '')
+  body = body.replace(/#.+\n/, '')
 
-  // ignore all spaces within the schedule
-  return lexer.reset(schedule.replace(/\s/g, ''))
+  // ignore all spaces within the body
+  return lexer.reset(body.replace(/\s/g, ''))
 }
