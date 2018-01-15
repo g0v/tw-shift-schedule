@@ -5,8 +5,19 @@ tape('line comment', function (t) {
   let schedule = '# hello'
 
   let tokens = simplify(getTokens(validate(schedule)))
+  t.same(tokens, [])
+  t.end()
+})
+
+tape('multi-line with comment', function (t) {
+  let schedule = `
+  # hello
+  xxxxx xxx
+  `
+
+  let tokens = simplify(getTokens(validate(schedule)))
   t.same(tokens, [
-    { type: 'comment', length: 6 }
+    { type: 'work', length: 8 }
   ])
   t.end()
 })
@@ -16,8 +27,7 @@ tape('inline comment', function (t) {
 
   let tokens = simplify(getTokens(validate(schedule)))
   t.same(tokens, [
-    { type: 'work', length: 8 },
-    { type: 'comment', length: 6 }
+    { type: 'work', length: 8 }
   ])
   t.end()
 })
@@ -116,7 +126,7 @@ tape('休息不足 8 小時', function (t) {
   t.end()
 })
 
-function getTokens(tokenizer) {
+function getTokens (tokenizer) {
   let ts = []
   while (true) {
     let token = tokenizer.next()
@@ -128,6 +138,6 @@ function getTokens(tokenizer) {
 }
 
 // 只取出 type 跟時段長度
-function simplify(tokens) {
+function simplify (tokens) {
   return tokens.map(t => { return { type: t.type, length: t.value.length } })
 }
