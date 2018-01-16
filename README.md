@@ -77,7 +77,7 @@ const shift = require('shift')
 檢查班表是否符合過勞因素，回傳符合的因素，若是沒有符合的則回傳空陣列。
 
 
-#### `shift.overworkCauses`
+#### `shift.overwork.Causes`
 
 過勞因素：
 ```javascript
