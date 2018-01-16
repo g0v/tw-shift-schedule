@@ -45,7 +45,7 @@ const shift = require('shift')
 
 #### `let schedule = shift.Schedule.fromTime(times, [opts])`
 
- 從給定的時間 `times` 建立一個班表資料。細節請參考 **Design** 段落
+ 從給定的時間 `times` 建立一個班表資料。
 
  ```
  * times: 二維陣列，每個子元素為「上班時間」與「下班時間」的 pair。如：`[['2018-01-01 08:00:00', '2018-01-01 18:00:00']]`
@@ -74,9 +74,12 @@ const shift = require('shift')
 
 #### `let causes = shift.overwork.check(schedule)`
 
-檢查班表是否符合過勞死成因，回傳符合的條件，若是沒有符合的則回傳空陣列。
+檢查班表是否符合過勞因素，回傳符合的因素，若是沒有符合的則回傳空陣列。
 
-可能的原因：
+
+#### `shift.overworkCauses`
+
+過勞因素：
 ```javascript
 const Causes = {
   irregular: '不規律的工作',
