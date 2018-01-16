@@ -6,7 +6,7 @@ tape('line comment', function (t) {
   let schedule = '# hello'
   schedule = Schedule.fromData(schedule)
 
-  let tokens = simplify(getTokens(tokenizer(schedule)))
+  let tokens = simplify(tokenizer(schedule))
   t.same(tokens, [])
   t.end()
 })
@@ -18,7 +18,7 @@ tape('multi-line with comment', function (t) {
   `
   schedule = Schedule.fromData(schedule)
 
-  let tokens = simplify(getTokens(tokenizer(schedule)))
+  let tokens = simplify(tokenizer(schedule))
   t.same(tokens, [
     { type: 'work', length: 8 }
   ])
@@ -29,7 +29,7 @@ tape('inline comment', function (t) {
   let schedule = 'xxxxxxxx # hello'
   schedule = Schedule.fromData(schedule)
 
-  let tokens = simplify(getTokens(tokenizer(schedule)))
+  let tokens = simplify(tokenizer(schedule))
   t.same(tokens, [
     { type: 'work', length: 8 }
   ])
@@ -40,7 +40,7 @@ tape('一班八小時', function (t) {
   let schedule = 'x'.repeat(8 * 60)
   schedule = Schedule.fromData(schedule)
 
-  let tokens = simplify(getTokens(tokenizer(schedule)))
+  let tokens = simplify(tokenizer(schedule))
   t.same(tokens, [
     { type: 'work', length: 480 }
   ])
@@ -51,7 +51,7 @@ tape('一班 12 小時', function (t) {
   let schedule = 'x'.repeat(12 * 60)
   schedule = Schedule.fromData(schedule)
 
-  let tokens = simplify(getTokens(tokenizer(schedule)))
+  let tokens = simplify(tokenizer(schedule))
   t.same(tokens, [
     { type: 'work', length: 720 }
   ])
@@ -62,7 +62,7 @@ tape('一班 12 小時又一分鐘', function (t) {
   let schedule = 'x'.repeat(12 * 60) + 'x'
   schedule = Schedule.fromData(schedule)
 
-  let tokens = simplify(getTokens(tokenizer(schedule)))
+  let tokens = simplify(tokenizer(schedule))
   t.same(tokens, [
     { type: 'work', length: 720 },
     { type: 'invalid', length: 1 }
@@ -74,7 +74,7 @@ tape('一班 12 小時，中間有休息', function (t) {
   let schedule = 'x'.repeat(5 * 60) + '.'.repeat(2 * 60) + 'x'.repeat(5 * 60)
   schedule = Schedule.fromData(schedule)
 
-  let tokens = simplify(getTokens(tokenizer(schedule)))
+  let tokens = simplify(tokenizer(schedule))
   t.same(tokens, [
     { type: 'work', length: 720 }
   ])
@@ -85,7 +85,7 @@ tape('一班 12 小時，前 8 休 2 後 2', function (t) {
   let schedule = 'x'.repeat(8 * 60) + '.'.repeat(2 * 60) + 'x'.repeat(2 * 60)
   schedule = Schedule.fromData(schedule)
 
-  let tokens = simplify(getTokens(tokenizer(schedule)))
+  let tokens = simplify(tokenizer(schedule))
   t.same(tokens, [
     { type: 'work', length: 720 }
   ])
@@ -96,7 +96,7 @@ tape('一班 作 8 休 7 作 8', function (t) {
   let schedule = 'x'.repeat(8 * 60) + '.'.repeat(7 * 60) + 'x'.repeat(8 * 60)
   schedule = Schedule.fromData(schedule)
 
-  let tokens = simplify(getTokens(tokenizer(schedule)))
+  let tokens = simplify(tokenizer(schedule))
   t.same(tokens, [
     { type: 'work', length: 480 },
     { type: 'invalid', length: 900 }
@@ -108,7 +108,7 @@ tape('兩班 作 8 休 8 作 8', function (t) {
   let schedule = 'x'.repeat(8 * 60) + '.'.repeat(8 * 60) + 'x'.repeat(8 * 60)
   schedule = Schedule.fromData(schedule)
 
-  let tokens = simplify(getTokens(tokenizer(schedule)))
+  let tokens = simplify(tokenizer(schedule))
   t.same(tokens, [
     { type: 'work', length: 480 },
     { type: 'rest', length: 480 },
@@ -121,7 +121,7 @@ tape('充足休息', function (t) {
   let schedule = '.'.repeat(8 * 60)
   schedule = Schedule.fromData(schedule)
 
-  let tokens = simplify(getTokens(tokenizer(schedule)))
+  let tokens = simplify(tokenizer(schedule))
   t.same(tokens, [
     { type: 'rest', length: 480 }
   ])
@@ -132,23 +132,12 @@ tape('休息不足 8 小時', function (t) {
   let schedule = '.'.repeat(8 * 60 - 1)
   schedule = Schedule.fromData(schedule)
 
-  let tokens = simplify(getTokens(tokenizer(schedule)))
+  let tokens = simplify(tokenizer(schedule))
   t.same(tokens, [
     { type: 'invalid', length: 479 }
   ])
   t.end()
 })
-
-function getTokens (tokenizer) {
-  let ts = []
-  while (true) {
-    let token = tokenizer.next()
-    if (!token) break
-
-    ts.push(token)
-  }
-  return ts
-}
 
 // 只取出 type 跟時段長度
 function simplify (tokens) {

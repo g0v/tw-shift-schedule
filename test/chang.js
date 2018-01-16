@@ -26,7 +26,7 @@ tape('台鐵班表, 不包含整備時間、隱形工時', function (t) {
     ['2017-12-22 09:00:00', '2017-12-22 09:34:00']
   ])
 
-  let tokens = prettify(moment('2017-12-01 09:36:00'), getTokens(tokenizer(s)))
+  let tokens = prettify(moment('2017-12-01 09:36:00'), tokenizer(s))
   t.same(tokens.length, 22)
   t.same(tokens[tokens.length - 1].type, 'invalid')
   t.ok(tokens[tokens.length - 1].time.isSame(moment('2017-12-14 22:58:00')))
@@ -34,21 +34,10 @@ tape('台鐵班表, 不包含整備時間、隱形工時', function (t) {
   t.end()
 })
 
-function getTokens(tokenizer) {
-  let ts = []
-  while (true) {
-    let token = tokenizer.next()
-    if (!token) break
-
-    ts.push(token)
-  }
-  return ts
+function prettify (startTime, tokens) {
+  return tokens.map(t => { return { type: t.type, length: t.value.length, line: t.line, time: offset2time(startTime, t.offset) } })
 }
 
-function prettify(startTime, tokens) {
-  return tokens.map(t => { return { type: t.type, length: t.value.length, line: t.line, time: offset2time(startTime.clone(), t.offset) } })
-}
-
-function offset2time(startTime, offset) {
-  return startTime.add(offset, 'minutes')
+function offset2time (startTime, offset) {
+  return startTime.clone().add(offset, 'minutes')
 }

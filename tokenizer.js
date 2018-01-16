@@ -16,5 +16,16 @@ module.exports = function (schedule, context) {
   body = body.replace(/#.+\n/, '')
 
   // ignore all spaces within the body
-  return lexer.reset(body.replace(/\s/g, ''))
+  return getTokens(lexer.reset(body.replace(/\s/g, '')))
+}
+
+function getTokens (tokenizer) {
+  let ts = []
+  while (true) {
+    let token = tokenizer.next()
+    if (!token) break
+
+    ts.push(token)
+  }
+  return ts
 }
