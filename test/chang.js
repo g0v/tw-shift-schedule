@@ -4,7 +4,7 @@ const tokenizer = require('../tokenizer')
 const moment = require('moment')
 
 tape('台鐵班表, 不包含整備時間、隱形工時', function (t) {
-  let s = new Schedule([
+  let s = Schedule.fromTime([
     ['2017-12-01 09:36:00', '2017-12-01 19:44:00'],
     ['2017-12-02 05:30:00', '2017-12-02 10:14:00'],
     ['2017-12-04 16:16:00', '2017-12-04 21:04:00'],
@@ -34,7 +34,7 @@ tape('台鐵班表, 不包含整備時間、隱形工時', function (t) {
   t.end()
 })
 
-function getTokens (tokenizer) {
+function getTokens(tokenizer) {
   let ts = []
   while (true) {
     let token = tokenizer.next()
@@ -45,10 +45,10 @@ function getTokens (tokenizer) {
   return ts
 }
 
-function prettify (startTime, tokens) {
+function prettify(startTime, tokens) {
   return tokens.map(t => { return { type: t.type, length: t.value.length, line: t.line, time: offset2time(startTime.clone(), t.offset) } })
 }
 
-function offset2time (startTime, offset) {
+function offset2time(startTime, offset) {
   return startTime.add(offset, 'minutes')
 }
