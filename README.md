@@ -71,6 +71,23 @@ const shift = require('shift')
 * schedule: shift.schedule 建立的班表資料。
 ```
 
+#### `let causes = shift.overwork.check(schedule)`
+
+檢查班表是否符合過勞死成因，回傳符合的條件，若是沒有符合的則回傳空陣列。
+
+可能的原因：
+```javascript
+const Causes = {
+  irregular: '不規律的工作',
+  longHours: '長時間工作',
+  nightShift: '夜班',
+  previousDayOverwork: '前一天長時間工作',
+  previousWeekOverwork: '前一週長時間工作',
+  previousMonthOvertime: '前一個月加班時數 > 100',
+  previousSixMonthsOvertime: '前六個月加班時數平均 > 45'
+}
+```
+
 ## Design
 
 此套件將班表編碼成如下格式：
