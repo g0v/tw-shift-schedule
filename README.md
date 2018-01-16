@@ -63,12 +63,13 @@ const shift = require('shift')
 
 將 schedule 物件轉為字串
 
-#### `let tokens = shift.tokenizer(schedule)`
+#### `let tokens = shift.tokenizer(schedule, continueWhenError)`
 
 解析班表，試著切出合法的工作/休息時段。如果嘗試失敗，會回傳 'invalid' 並且指出錯誤的位置。
 
 ```
 * schedule: shift.schedule 建立的班表資料。
+* continueWhenError: 遇到違法時，跳過該區段繼續往下解析
 ```
 
 #### `let causes = shift.overwork.check(schedule)`

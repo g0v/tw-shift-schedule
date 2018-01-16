@@ -139,6 +139,31 @@ tape('休息不足 8 小時', function (t) {
   t.end()
 })
 
+tape('invalid without continueWhenError', function (t) {
+  let schedule = 'x'.repeat(8 * 60) + '.'.repeat(8 * 60 - 1) + 'x'.repeat(8 * 60)
+  schedule = Schedule.fromData(schedule)
+
+  let tokens = simplify(tokenizer(schedule))
+  t.same(tokens, [
+    { type: 'work', length: 480 },
+    { type: 'invalid', length: 959 }
+  ])
+  t.end()
+})
+
+tape('invalid with continueWhenError', function (t) {
+  let schedule = 'x'.repeat(8 * 60) + '.'.repeat(8 * 60 - 1) + 'x'.repeat(8 * 60)
+  schedule = Schedule.fromData(schedule)
+
+  let tokens = simplify(tokenizer(schedule, true))
+  t.same(tokens, [
+    { type: 'work', length: 480 },
+    { type: 'invalid', length: 479 },
+    { type: 'work', length: 480 }
+  ])
+  t.end()
+})
+
 // 只取出 type 跟時段長度
 function simplify (tokens) {
   return tokens.map(t => { return { type: t.type, length: t.value.length } })

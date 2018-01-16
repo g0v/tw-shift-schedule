@@ -1,6 +1,6 @@
 const moo = require('moo')
 
-module.exports = function (schedule, context) {
+module.exports = function (schedule, continueWhenError) {
   let lexer = moo.compile({
     // 一個班（中間可能有休息）
     work: /x.{1,718}x/,
@@ -16,7 +16,40 @@ module.exports = function (schedule, context) {
   body = body.replace(/#.+\n/, '')
 
   // ignore all spaces within the body
-  return getTokens(lexer.reset(body.replace(/\s/g, '')))
+  body = body.replace(/\s/g, '')
+
+  let tokens = getTokens(lexer.reset(body))
+
+  if (!continueWhenError) {
+    return tokens
+  }
+
+  while (tokens[tokens.length - 1].type === 'invalid') {
+    let segStart = 0
+    if (tokens.length > 1) {
+      let lastValidToken = tokens[tokens.length - 2]
+      segStart = lastValidToken.offset + lastValidToken.value.length + 1
+    }
+    // skip the first segment of body
+    let x = body[segStart]
+    let nextSegStart = 0
+    for (let i = segStart; i < body.length; i++) {
+      if (body[i] !== x) {
+        // found the end of segment
+
+        nextSegStart = i
+        break
+      }
+    }
+    let skipLength = nextSegStart - segStart + 1
+
+    body = body.slice(nextSegStart, body.length)
+    tokens[tokens.length - 1].value = tokens[tokens.length - 1].text = tokens[tokens.length - 1].value.slice(0, skipLength)
+    tokens = tokens.concat(getTokens(lexer.reset(body)))
+    break
+  }
+
+  return tokens
 }
 
 function getTokens (tokenizer) {
