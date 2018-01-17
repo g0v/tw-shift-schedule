@@ -6,7 +6,7 @@ tape('from/to string', function (t) {
   let data = `
     foo = 1
     bar = hi
-    --
+--
     xxxxxxxxxx
   `
 
@@ -16,6 +16,23 @@ tape('from/to string', function (t) {
 
   let x = s.toString()
   t.same(x, `foo=1\nbar=hi\n--\nxxxxxxxxxx`)
+  t.end()
+})
+
+tape('headers containing \'--\'', function (t) {
+  let data = `
+    foo = 1--
+    bar = hi
+--
+    xxxxxxxxxx
+  `
+
+  let s = Schedule.fromData(data)
+  t.same(s.header, { foo: '1--', bar: 'hi' })
+  t.same(s.body, 'xxxxxxxxxx')
+
+  let x = s.toString()
+  t.same(x, `foo=1--\nbar=hi\n--\nxxxxxxxxxx`)
   t.end()
 })
 

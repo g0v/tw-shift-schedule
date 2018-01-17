@@ -46,12 +46,12 @@ Schedule.fromTime = function (punches, opts) {
 }
 
 Schedule.fromData = function (data) {
-  if (!data.includes('--\n')) {
+  if (!data.includes('\n--\n')) {
     // no header
     return new Schedule({}, data)
   }
 
-  let parts = data.split('--\n').map(p => p.trim())
+  let parts = data.split('\n--\n').map(p => p.trim())
   let header = parts[0]
   let body = parts[1]
   header = header.split('\n').map(h => h.split('=').map(x => x.trim())).reduce((sum, h) => {
