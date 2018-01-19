@@ -1,6 +1,6 @@
-const tokenizer = require('./tokenizer')
+var tokenizer = require('./tokenizer')
 
-const Causes = {
+var Causes = {
   irregular: '不規律的工作',
   longHours: '長時間工作',
   nightShift: '夜班',
@@ -14,15 +14,15 @@ module.exports = { Causes, check }
 
 // 過勞定義 http://www.mqjh.tp.edu.tw/mediafile/1901/news/19/2016-1/22016-1-24-21-27-24-nf1.pdf
 function check (schedule) {
-  let causes = []
+  var causes = []
   // 只取出工作時段
-  let tokens = prettify(schedule.header.start, tokenizer(schedule)).filter(t => t.type === 'work')
+  var tokens = prettify(schedule.header.start, tokenizer(schedule)).filter(t => t.type === 'work')
   // 是否不規律
 
   // 假設：如果每班的開始時間跟結束時間都不在同個小時內就當作不規律
-  let shiftStart
-  let shiftEnd
-  for (const t of tokens) {
+  var shiftStart
+  var shiftEnd
+  for (var t of tokens) {
     if (!shiftStart) {
       shiftStart = t.time
       shiftEnd = shiftStart.clone().add(t.length, 'minutes')
@@ -37,16 +37,16 @@ function check (schedule) {
 
   // 長時間
   // 假設平均工時大於 8 小時就是長時間
-  let avgLength = (tokens.map(t => t.length).reduce((sum, x) => sum + x, 0) / 60) / tokens.length
+  var avgLength = (tokens.map(t => t.length).reduce((sum, x) => sum + x, 0) / 60) / tokens.length
   if (avgLength > 8) {
     causes.push(Causes.longHours)
   }
 
   // 夜班
   // 下午 10 點 ~ 早上 6 點 = 夜班
-  for (const t of tokens) {
-    let startHour = t.time.hour()
-    let endHour = t.time.clone().add(t.length, 'minutes').hour()
+  for (var t of tokens) {
+    var startHour = t.time.hour()
+    var endHour = t.time.clone().add(t.length, 'minutes').hour()
     if ((startHour >= 22 || startHour <= 6) || (endHour >= 22 || endHour <= 6)) {
       causes.push(Causes.nightShift)
       break
@@ -82,8 +82,8 @@ function lastAvgLenthInHour (tokens, length) {
 }
 
 function sumLastLengthInHour (tokens, length) {
-  let l = 0
-  for (let i = tokens.length - 1; i > tokens.length - 1 - length; i--) {
+  var l = 0
+  for (var i = tokens.length - 1; i > tokens.length - 1 - length; i--) {
     l += tokens[i].length
   }
   return l / 60
