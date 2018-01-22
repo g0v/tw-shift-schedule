@@ -117,6 +117,17 @@ tape('兩班 作 8 休 8 作 8', function (t) {
   t.end()
 })
 
+tape('一班中兩次休息', function (t) {
+  let schedule = 'x'.repeat(4 * 60) + '.'.repeat(30) + 'x'.repeat(2 * 60) + '.'.repeat(30) + 'x'.repeat(3 * 60)
+  schedule = Schedule.fromData(schedule)
+
+  let tokens = simplify(tokenizer(schedule))
+  t.same(tokens, [
+    { type: 'work', length: 600 }
+  ])
+  t.end()
+})
+
 tape('充足休息', function (t) {
   let schedule = '.'.repeat(8 * 60)
   schedule = Schedule.fromData(schedule)
