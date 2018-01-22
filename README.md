@@ -72,6 +72,8 @@ const shift = require('shift')
 * continueWhenInvalid: 遇到違法時，跳過該區段繼續往下解析
 ```
 
+回傳值的解讀方式請參考 **Design** 一節
+
 #### `let causes = shift.overwork.check(schedule)`
 
 檢查班表是否符合過勞因素，回傳符合的因素，若是沒有符合的則回傳空陣列。
