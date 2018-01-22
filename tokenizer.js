@@ -1,6 +1,6 @@
 var moo = require('moo')
 
-module.exports = function (schedule, continueWhenError) {
+module.exports = function (schedule, continueWhenInvalid) {
   var lexer = moo.compile({
     // 一個班（中間可能有休息）
     work: /x.{1,718}x/,
@@ -20,7 +20,7 @@ module.exports = function (schedule, continueWhenError) {
 
   var tokens = getTokens(lexer.reset(body))
 
-  if (!continueWhenError) {
+  if (!continueWhenInvalid) {
     return tokens
   }
 
