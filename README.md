@@ -47,17 +47,15 @@ const shift = require('shift')
 
  從給定的時間 `times` 建立一個班表資料。
 
- ```
  * times: 二維陣列，每個子元素為「上班時間」與「下班時間」的 pair。如：`[['2018-01-01 08:00:00', '2018-01-01 18:00:00']]`
  * opts:
    * format: 時間的格式，預設為 ISO 8601。格式參考 https://momentjs.com/docs/#/parsing/string/
    * before: 隱藏工時-前。ex. '30 minutes'
    * after: 隱藏工時-後。ex. '30 minutes'
- ```
 
 #### `let schedule = shift.Schedule.fromData(data)`
 
- 從字串資料建立 schedule 物件
+ 從字串資料建立 schedule 物件。`data` 參數格式參考 **Design** 一節
 
 #### `let data = schedule.toString()`
 
@@ -67,10 +65,8 @@ const shift = require('shift')
 
 解析班表，試著切出合法的工作/休息時段。如果嘗試失敗，會回傳 'invalid' 並且指出錯誤的位置。
 
-```
 * schedule: shift.schedule 建立的班表資料。
 * continueWhenInvalid: 遇到違法時，跳過該區段繼續往下解析
-```
 
 回傳值的解讀方式請參考 **Design** 一節
 
