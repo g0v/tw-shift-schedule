@@ -1,4 +1,4 @@
-var tokenizer = require('./tokenizer')
+var lexer = require('./lexer')
 
 var Causes = {
   irregular: '不規律的工作',
@@ -16,7 +16,7 @@ module.exports = { Causes, check }
 function check (schedule) {
   var causes = []
   // 只取出工作時段
-  var tokens = prettify(schedule.header.start, tokenizer(schedule.body)).filter(t => t.type === 'work')
+  var tokens = prettify(schedule.header.start, lexer(schedule.body)).filter(t => t.type === 'work')
   // 是否不規律
 
   // 假設：如果每班的開始時間跟結束時間都不在同個小時內就當作不規律

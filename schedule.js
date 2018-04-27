@@ -37,7 +37,7 @@ Schedule.fromTime = function (punches, opts) {
     }
 
     var duration = moment.duration(end.diff(start)).asMinutes()
-    for (var j = 0; j < duration; j++) {
+    for (var k = 0; k < duration; k++) {
       body += 'x'
     }
   })
