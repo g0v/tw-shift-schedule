@@ -87,9 +87,10 @@ function generateSchedule (hourPerDay, day) {
   let format = 'YYYY-MM-DD HH:mm:ss'
   let start = moment('2018-06-01 07:00:00')
   for (let i = 0; i < day; i++) {
-    let x = start.clone()
-    schedule.push([x.format(format), x.clone().add(hourPerDay, 'hours')])
+    let x = start.clone().add(i, 'days')
+    schedule.push([x.format(format), x.clone().add(hourPerDay, 'hours').format(format)])
   }
 
+  console.log(schedule)
   return schedule
 }

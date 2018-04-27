@@ -1,13 +1,21 @@
 var moo = require('moo')
 
 module.exports = function (schedule, continueWhenInvalid) {
-  var lexer = moo.compile({
-    // 一個班（中間可能有休息）
-    work: /x.{1,718}x/,
-    // 休息（至少 8 小時）
-    rest: /\.{480,}/,
-    // everything else is invalid
-    invalid: moo.error
+  var lexer = moo.states({
+    workingDay: {
+      // 一個班（中間可能有休息）
+      work: { match: /x(?:.{1,718}x)?/, next: 'resting' },
+      // 休息（至少 8 小時）
+      rest: /\.{480,}/,
+      // everything else is invalid
+      invalid: moo.error
+    },
+    resting: {
+      // 休息（至少 8 小時）
+      rest: { match: /\.{480,}/, next: 'workingDay' },
+      // everything else is invalid
+      invalid: moo.error
+    }
   })
   var body = schedule.body
 
@@ -18,12 +26,13 @@ module.exports = function (schedule, continueWhenInvalid) {
   // ignore all spaces within the body
   body = body.replace(/\s/g, '')
 
-  var tokens = getTokens(lexer.reset(body))
+  var tokens = Array.from(lexer.reset(body))
 
   if (!continueWhenInvalid) {
     return tokens
   }
 
+  // continue parsing from the starting point of invalid token
   while (tokens[tokens.length - 1].type === 'invalid') {
     var segStart = 0
     if (tokens.length > 1) {
@@ -45,20 +54,9 @@ module.exports = function (schedule, continueWhenInvalid) {
 
     body = body.slice(nextSegStart, body.length)
     tokens[tokens.length - 1].value = tokens[tokens.length - 1].text = tokens[tokens.length - 1].value.slice(0, skipLength)
-    tokens = tokens.concat(getTokens(lexer.reset(body)))
+    tokens = tokens.concat(Array.from(lexer.reset(body)))
     break
   }
 
   return tokens
-}
-
-function getTokens (tokenizer) {
-  var ts = []
-  while (true) {
-    var token = tokenizer.next()
-    if (!token) break
-
-    ts.push(token)
-  }
-  return ts
 }

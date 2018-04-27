@@ -58,7 +58,7 @@ tape('一班 12 小時', function (t) {
   t.end()
 })
 
-tape('一班 12 小時又一分鐘', function (t) {
+tape('一班 12 小時又 1 分鐘', function (t) {
   let schedule = 'x'.repeat(12 * 60) + 'x'
   schedule = Schedule.fromData(schedule)
 
@@ -66,6 +66,18 @@ tape('一班 12 小時又一分鐘', function (t) {
   t.same(tokens, [
     { type: 'work', length: 720 },
     { type: 'invalid', length: 1 }
+  ])
+  t.end()
+})
+
+tape('一班 24 小時', function (t) {
+  let schedule = 'x'.repeat(24 * 60)
+  schedule = Schedule.fromData(schedule)
+
+  let tokens = simplify(tokenizer(schedule))
+  t.same(tokens, [
+    { type: 'work', length: 720 },
+    { type: 'invalid', length: 720 }
   ])
   t.end()
 })
@@ -176,6 +188,6 @@ tape('invalid with continueWhenError', function (t) {
 })
 
 // 只取出 type 跟時段長度
-function simplify (tokens) {
+function simplify(tokens) {
   return tokens.map(t => { return { type: t.type, length: t.value.length } })
 }
