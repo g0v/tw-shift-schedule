@@ -16,13 +16,14 @@ module.exports = { Causes, check }
 function check (schedule) {
   var causes = []
   // 只取出工作時段
-  var tokens = prettify(schedule.header.start, tokenizer(schedule)).filter(t => t.type === 'work')
+  var tokens = prettify(schedule.header.start, tokenizer(schedule.body)).filter(t => t.type === 'work')
   // 是否不規律
 
   // 假設：如果每班的開始時間跟結束時間都不在同個小時內就當作不規律
   var shiftStart
   var shiftEnd
-  for (var t of tokens) {
+  var t
+  for (t of tokens) {
     if (!shiftStart) {
       shiftStart = t.time
       shiftEnd = shiftStart.clone().add(t.length, 'minutes')
@@ -44,7 +45,7 @@ function check (schedule) {
 
   // 夜班
   // 下午 10 點 ~ 早上 6 點 = 夜班
-  for (var t of tokens) {
+  for (t of tokens) {
     var startHour = t.time.hour()
     var endHour = t.time.clone().add(t.length, 'minutes').hour()
     if ((startHour >= 22 || startHour <= 6) || (endHour >= 22 || endHour <= 6)) {
