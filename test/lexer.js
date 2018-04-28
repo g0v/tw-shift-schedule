@@ -1,5 +1,5 @@
 const tape = require('tape')
-const lexer = require('../lexer')
+const lexer = require('../src/lexer')
 
 tape('line comment', function (t) {
   let schedule = '# hello'

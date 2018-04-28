@@ -2,22 +2,27 @@
   "name": "tw-shift-schedule",
   "version": "0.0.8",
   "description": "班表小幫手",
-  "main": "index.js",
+  "main": "lib/index.js",
   "scripts": {
-    "test": "tape test/*.js | faucet"
+    "test": "tape test/*.js | faucet",
+    "postinstall": "npx babel src --out-dir lib"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/g0v/tw-shift-schedule"
   },
   "keywords": [
-    "shift",
-    "schedule",
-    "parser generator"
+    "labor",
+    "shift schedule",
+    "lexer",
+    "Taiwan"
   ],
   "author": "Poga Po<poga.po@gmail.com>",
   "license": "MIT",
   "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-polyfill": "^6.26.0",
+    "babel-preset-env": "^1.6.1",
     "faucet": "0.0.1",
     "tape": "^4.8.0"
   },

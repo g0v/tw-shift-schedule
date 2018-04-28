@@ -1,5 +1,5 @@
 module.exports = {
-  tokenizer: require('./tokenizer'),
+  lexer: require('./lexer'),
   Schedule: require('./schedule'),
   overwork: require('./overwork')
 }

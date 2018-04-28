@@ -1,5 +1,5 @@
 const tape = require('tape')
-const Schedule = require('../schedule')
+const Schedule = require('../src/schedule')
 const moment = require('moment')
 
 tape('from/to string', function (t) {

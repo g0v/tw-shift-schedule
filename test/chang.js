@@ -1,6 +1,6 @@
 const tape = require('tape')
-const Schedule = require('../schedule')
-const lexer = require('../lexer')
+const Schedule = require('../src/schedule')
+const lexer = require('../src/lexer')
 const moment = require('moment')
 
 tape('台鐵班表, 不包含整備時間、隱形工時', function (t) {

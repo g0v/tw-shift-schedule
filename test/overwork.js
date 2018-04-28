@@ -1,6 +1,6 @@
 const tape = require('tape')
-const Schedule = require('../schedule')
-const overwork = require('../overwork')
+const Schedule = require('../src/schedule')
+const overwork = require('../src/overwork')
 const moment = require('moment')
 
 tape('只有一天的班表，沒有過勞', function (t) {
