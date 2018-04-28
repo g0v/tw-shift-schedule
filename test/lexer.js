@@ -170,6 +170,28 @@ tape('invalid with continueWhenError', function (t) {
   t.end()
 })
 
+tape('單週正常工時 - 每週五天 8 小時', function (t) {
+  let workday = 'x'.repeat(8 * 60) + '.'.repeat(16 * 60)
+  let restDay = '.'.repeat(24 * 60)
+
+  let schedule = workday + workday + workday + workday + workday + restDay + restDay
+
+  let tokens = simplify(lexer(schedule, true))
+  t.same(tokens, [
+    { type: 'work', length: 480 },
+    { type: 'rest', length: 960 },
+    { type: 'work', length: 480 },
+    { type: 'rest', length: 960 },
+    { type: 'work', length: 480 },
+    { type: 'rest', length: 960 },
+    { type: 'work', length: 480 },
+    { type: 'rest', length: 960 },
+    { type: 'work', length: 480 },
+    { type: 'fullRest', length: (16 + 24 + 24) * 60 }
+  ])
+  t.end()
+})
+
 tape('兩週變形工時 - 每週四天 10 小時', function (t) {
   let workday = 'x'.repeat(10 * 60) + '.'.repeat(14 * 60)
   let restDay = '.'.repeat(24 * 60)
