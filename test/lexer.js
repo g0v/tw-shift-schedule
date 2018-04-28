@@ -170,7 +170,168 @@ tape('invalid with continueWhenError', function (t) {
   t.end()
 })
 
+tape('兩週變形工時 - 每週四天 10 小時', function (t) {
+  let workday = 'x'.repeat(10 * 60) + '.'.repeat(14 * 60)
+  let restDay = '.'.repeat(24 * 60)
+
+  let schedule = workday + workday + workday + workday + restDay + restDay + restDay
+
+  let tokens = simplify(lexer(schedule, true))
+  t.same(tokens, [
+    { type: 'work', length: 600 },
+    { type: 'rest', length: 840 },
+    { type: 'work', length: 600 },
+    { type: 'rest', length: 840 },
+    { type: 'work', length: 600 },
+    { type: 'rest', length: 840 },
+    { type: 'work', length: 600 },
+    { type: 'fullRest', length: 5160 }
+  ])
+  t.end()
+})
+
+tape('兩週變形工時 - 每週四天 10 小時，中間有休息 2 小時', function (t) {
+  let workday = 'x'.repeat(5 * 60) + '.'.repeat(2 * 60) + 'x'.repeat(5 * 60) + '.'.repeat(14 * 60)
+  let restDay = '.'.repeat(24 * 60)
+
+  let schedule = workday + workday + workday + workday + restDay + restDay + restDay
+
+  let tokens = simplify(lexer(schedule, true))
+  t.same(tokens, [
+    { type: 'work', length: 720 },
+    { type: 'rest', length: 840 },
+    { type: 'work', length: 720 },
+    { type: 'rest', length: 840 },
+    { type: 'work', length: 720 },
+    { type: 'rest', length: 840 },
+    { type: 'work', length: 720 },
+    { type: 'fullRest', length: 5160 }
+  ])
+  t.end()
+})
+
+tape('四週變形工時 - 做二休二', function (t) {
+  let workday = 'x'.repeat(4 * 60) + '.'.repeat(60) + 'x'.repeat(4 * 60) + '.'.repeat(60) + 'x'.repeat(2 * 60) + '.'.repeat(12 * 60)
+  let restDay = '.'.repeat(24 * 60)
+
+  let schedule = workday + workday + restDay + restDay + workday + workday + restDay + restDay
+
+  let tokens = simplify(lexer(schedule, true))
+  t.same(tokens, [
+    { type: 'work', length: 720 },
+    { type: 'rest', length: 720 },
+    { type: 'work', length: 720 },
+    { type: 'fullRest', length: 3600 },
+    { type: 'work', length: 720 },
+    { type: 'rest', length: 720 },
+    { type: 'work', length: 720 },
+    { type: 'fullRest', length: 3600 }
+  ])
+  t.end()
+})
+
+tape('八週變形工時 - 休息日集中最後兩週', function (t) {
+  let workday = 'x'.repeat(4 * 60) + '.'.repeat(60) + 'x'.repeat(4 * 60) + '.'.repeat(15 * 60)
+  let restDay = '.'.repeat(24 * 60)
+  let workWeek = workday.repeat(6) + restDay
+  let schedule = workWeek.repeat(6) + workday.repeat(4) + restDay.repeat(10)
+
+  let tokens = simplify(lexer(schedule, true))
+  t.same(tokens, [
+    // 第一週
+    { type: 'work', length: 540 },
+    { type: 'rest', length: 900 },
+    { type: 'work', length: 540 },
+    { type: 'rest', length: 900 },
+    { type: 'work', length: 540 },
+    { type: 'rest', length: 900 },
+    { type: 'work', length: 540 },
+    { type: 'rest', length: 900 },
+    { type: 'work', length: 540 },
+    { type: 'rest', length: 900 },
+    { type: 'work', length: 540 },
+    { type: 'fullRest', length: 2340 },
+    // 第二週
+    { type: 'work', length: 540 },
+    { type: 'rest', length: 900 },
+    { type: 'work', length: 540 },
+    { type: 'rest', length: 900 },
+    { type: 'work', length: 540 },
+    { type: 'rest', length: 900 },
+    { type: 'work', length: 540 },
+    { type: 'rest', length: 900 },
+    { type: 'work', length: 540 },
+    { type: 'rest', length: 900 },
+    { type: 'work', length: 540 },
+    { type: 'fullRest', length: 2340 },
+    // 第三週
+    { type: 'work', length: 540 },
+    { type: 'rest', length: 900 },
+    { type: 'work', length: 540 },
+    { type: 'rest', length: 900 },
+    { type: 'work', length: 540 },
+    { type: 'rest', length: 900 },
+    { type: 'work', length: 540 },
+    { type: 'rest', length: 900 },
+    { type: 'work', length: 540 },
+    { type: 'rest', length: 900 },
+    { type: 'work', length: 540 },
+    { type: 'fullRest', length: 2340 },
+    // 第四週
+    { type: 'work', length: 540 },
+    { type: 'rest', length: 900 },
+    { type: 'work', length: 540 },
+    { type: 'rest', length: 900 },
+    { type: 'work', length: 540 },
+    { type: 'rest', length: 900 },
+    { type: 'work', length: 540 },
+    { type: 'rest', length: 900 },
+    { type: 'work', length: 540 },
+    { type: 'rest', length: 900 },
+    { type: 'work', length: 540 },
+    { type: 'fullRest', length: 2340 },
+    // 第五週
+    { type: 'work', length: 540 },
+    { type: 'rest', length: 900 },
+    { type: 'work', length: 540 },
+    { type: 'rest', length: 900 },
+    { type: 'work', length: 540 },
+    { type: 'rest', length: 900 },
+    { type: 'work', length: 540 },
+    { type: 'rest', length: 900 },
+    { type: 'work', length: 540 },
+    { type: 'rest', length: 900 },
+    { type: 'work', length: 540 },
+    { type: 'fullRest', length: 2340 },
+    // 第六週
+    { type: 'work', length: 540 },
+    { type: 'rest', length: 900 },
+    { type: 'work', length: 540 },
+    { type: 'rest', length: 900 },
+    { type: 'work', length: 540 },
+    { type: 'rest', length: 900 },
+    { type: 'work', length: 540 },
+    { type: 'rest', length: 900 },
+    { type: 'work', length: 540 },
+    { type: 'rest', length: 900 },
+    { type: 'work', length: 540 },
+    { type: 'fullRest', length: 2340 },
+    // 第七週，只工作四天
+    { type: 'work', length: 540 },
+    { type: 'rest', length: 900 },
+    { type: 'work', length: 540 },
+    { type: 'rest', length: 900 },
+    { type: 'work', length: 540 },
+    { type: 'rest', length: 900 },
+    { type: 'work', length: 540 },
+    // 連休 10 天
+    { type: 'fullRest', length: 15300 }
+  ]
+  )
+  t.end()
+})
+
 // 只取出 type 跟時段長度
-function simplify (tokens) {
+function simplify(tokens) {
   return tokens.map(t => { return { type: t.type, length: t.value.length } })
 }

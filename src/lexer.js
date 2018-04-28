@@ -6,7 +6,8 @@ var moo = require('moo')
 // * 上班後是否有至少 8 小時的休息？
 //
 // lexer 只負責檢查「單一工作時段是否合法」
-// 多個工作時段之間的關係，例如：每週含加班工時上限 72 小時、變形工時等，不在此檢查
+// 多個工作時段之間的關係，例如：每週含加班工時上限 72 小時、變形工時的休假日數等，不在此檢查
+// **note: 因為變形工時不會增加工作時數，單日工時上限也相同，因此 lexer 一定要通過才有可能是合法的變形工時
 module.exports = function (scheduleData, continueWhenInvalid) {
   var lexer = moo.states({
     // 一個工作日可能是：
@@ -21,6 +22,8 @@ module.exports = function (scheduleData, continueWhenInvalid) {
       invalid: moo.error
     },
     resting: {
+      // 完整例假日或休假日(24hr)
+      fullRest: { match: /\.{1440,}/, next: 'workingDay' },
       // 休息（至少 8 小時）
       rest: { match: /\.{480,}/, next: 'workingDay' },
       // everything else is invalid
