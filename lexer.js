@@ -1,18 +1,21 @@
 var moo = require('moo')
 
-// Tokenizer: 利用 moo.lexer 對工作記錄進行切段，可以做出以下判斷：
+// Lexer: 利用 moo.lexer 對工作記錄進行切段，可以做出以下判斷：
 // * 上班時間是否超過 12 小時？
 // * 兩個上班時段間的休息時間，應該是休息時間，還是下班時間？
 // * 上班後是否有至少 8 小時的休息？
+//
+// lexer 只負責檢查「單一工作時段是否合法」
+// 多個工作時段之間的關係，例如：每週含加班工時上限 72 小時、變形工時等，不在此檢查
 module.exports = function (scheduleData, continueWhenInvalid) {
   var lexer = moo.states({
     // 一個工作日可能是：
-    // 1. 一個假日
+    // 1. 一個假日，不管是例假日或是休假日
     // 2. 一個上班日，上班日中的工作不能超過 12 小時
     workingDay: {
       // 一個班（中間可能有休息），一旦工作，就必須要有對應的休息，跳進 resting state 檢查是否有休息
       work: { match: /x(?:.{1,718}x)?/, next: 'resting' },
-      // 完整假日(24hr)
+      // 完整例假日或休假日(24hr)
       fullRest: /\.{1440,}/,
       // everything else is invalid
       invalid: moo.error
@@ -25,7 +28,11 @@ module.exports = function (scheduleData, continueWhenInvalid) {
     }
   })
 
-  scheduleData += '\n'
+  // 補上最後的 newline 方便 lexer 處理
+  if (!scheduleData.endsWith('\n')) {
+    scheduleData += '\n'
+  }
+
   // remove comments
   scheduleData = scheduleData.replace(/#.+\n/, '')
 
@@ -51,7 +58,6 @@ module.exports = function (scheduleData, continueWhenInvalid) {
     for (var i = segStart; i < scheduleData.length; i++) {
       if (scheduleData[i] !== v) {
         // found the end of segment
-
         nextSegStart = i
         break
       }
