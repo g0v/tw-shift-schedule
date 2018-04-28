@@ -5,7 +5,7 @@
   "main": "lib/index.js",
   "scripts": {
     "test": "tape test/*.js | faucet",
-    "postinstall": "npx babel src --out-dir lib"
+    "prepublish": "npx babel src --out-dir lib"
   },
   "repository": {
     "type": "git",
