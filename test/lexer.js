@@ -354,6 +354,6 @@ tape('八週變形工時 - 休息日集中最後兩週', function (t) {
 })
 
 // 只取出 type 跟時段長度
-function simplify(tokens) {
+function simplify (tokens) {
   return tokens.map(t => { return { type: t.type, length: t.value.length } })
 }
