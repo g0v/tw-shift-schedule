@@ -1,7 +1,7 @@
 // generate shift schedule from punch time
 var moment = require('moment')
 
-function Schedule (header, body) {
+function Schedule(header, body) {
   this.header = header
   this.body = body
 }
@@ -45,7 +45,7 @@ Schedule.fromTime = function (punches, opts) {
   return new Schedule(header, body)
 }
 
-Schedule.fromData = function (data) {
+Schedule.load = function (data) {
   if (!data.includes('\n--\n')) {
     // no header
     return new Schedule({}, data)
@@ -74,7 +74,7 @@ Schedule.prototype.toString = function () {
 
 module.exports = Schedule
 
-function parseTimeOpt (opt) {
+function parseTimeOpt(opt) {
   var o = opt.split(' ')
   return moment.duration(+o[0], o[1])
 }

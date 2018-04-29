@@ -53,13 +53,14 @@ const shift = require('tw-shift-schedule')
    * before: 隱藏工時-前。ex. '30 minutes'
    * after: 隱藏工時-後。ex. '30 minutes'
 
-#### `let schedule = shift.Schedule.fromData(data)`
-
- 從字串資料建立 schedule 物件。`data` 參數格式參考 **Design** 一節
-
 #### `let data = schedule.toString()`
 
 將 schedule 物件轉為字串
+
+#### `let schedule = shift.Schedule.load(data)`
+
+ 從字串資料建立 schedule 物件。
+
 
 #### `let errorsAndWarnings = shift.validate(schedule, opts)`
 
