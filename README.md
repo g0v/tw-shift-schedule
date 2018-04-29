@@ -59,7 +59,7 @@ const shift = require('tw-shift-schedule')
 
 #### `let schedule = shift.Schedule.load(data)`
 
- 從字串資料建立 schedule 物件。
+從字串建立 schedule 物件。
 
 
 #### `let errorsAndWarnings = shift.validate(schedule, opts)`

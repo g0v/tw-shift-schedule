@@ -33,7 +33,7 @@ function validateNormal (schedule) {
   }
 
   // 一週內要有一個例假
-  let e2 = assertMaxWorkDayCountInPeriod(tokens, 7, 6, '每週至少要有一個例假、一個休息日')
+  let e2 = assertMaxWorkDayCountInPeriod(tokens, 7, 6, '每週至少要有一個例假')
   if (e2) {
     ret.push(e2)
   }
@@ -70,7 +70,7 @@ function validateTwoWeekTransformed (schedule) {
   }
 
   // 兩週內要有兩個例假
-  let e2 = assertMaxWorkDayCountInPeriod(tokens, 14, 12, '兩週內應有兩個例假與兩個休息日')
+  let e2 = assertMaxWorkDayCountInPeriod(tokens, 14, 12, '兩週內應有兩個例假')
   if (e2) {
     ret.push(e2)
   }
@@ -92,7 +92,7 @@ function validateFourWeekTransformed (schedule) {
   }
 
   // 四週內要有四個例假
-  let e2 = assertMaxWorkDayCountInPeriod(tokens, 7 * 4, 7 * 4 - 4, '四週內應有四個例假 + 四個休假日')
+  let e2 = assertMaxWorkDayCountInPeriod(tokens, 7 * 4, 7 * 4 - 4, '四週內應有四個例假')
   if (e2) {
     ret.push(e2)
   }
@@ -126,7 +126,7 @@ function validateEightWeekTransformed (schedule) {
   }
 
   // 八週內要有八個例假
-  let e2 = assertMaxWorkDayCountInPeriod(tokens, 7 * 8, 7 * 8 - 8, '八週內應有八個例假 + 八個休息日')
+  let e2 = assertMaxWorkDayCountInPeriod(tokens, 7 * 8, 7 * 8 - 8, '八週內應有八個例假')
   if (e2) {
     ret.push(e2)
   }
