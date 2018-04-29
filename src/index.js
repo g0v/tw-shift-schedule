@@ -1,5 +1,5 @@
 module.exports = {
-  lexer: require('./lexer'),
+  validate: require('./validate'),
   Schedule: require('./schedule'),
   overwork: require('./overwork')
 }
