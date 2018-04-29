@@ -10,7 +10,7 @@ tape('from/to string', function (t) {
     xxxxxxxxxx
   `
 
-  let s = Schedule.fromData(data)
+  let s = Schedule.load(data)
   t.same(s.header, { foo: '1', bar: 'hi' })
   t.same(s.body, 'xxxxxxxxxx')
 
@@ -27,7 +27,7 @@ tape('headers containing \'--\'', function (t) {
     xxxxxxxxxx
   `
 
-  let s = Schedule.fromData(data)
+  let s = Schedule.load(data)
   t.same(s.header, { foo: '1--', bar: 'hi' })
   t.same(s.body, 'xxxxxxxxxx')
 

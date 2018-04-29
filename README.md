@@ -40,7 +40,7 @@ console.log(tokens) // 切出的 上班/下班區段，若有不合法會回傳 
 ## API
 
 ```javascript
-const shift = require('shift')
+const shift = require('tw-shift-schedule')
 ```
 
 #### `let schedule = shift.Schedule.fromTime(times, [opts])`
@@ -53,22 +53,35 @@ const shift = require('shift')
    * before: 隱藏工時-前。ex. '30 minutes'
    * after: 隱藏工時-後。ex. '30 minutes'
 
-#### `let schedule = shift.Schedule.fromData(data)`
-
- 從字串資料建立 schedule 物件。`data` 參數格式參考 **Design** 一節
-
 #### `let data = schedule.toString()`
 
 將 schedule 物件轉為字串
 
-#### `let tokens = shift.tokenizer(schedule, continueWhenInvalid)`
+#### `let schedule = shift.Schedule.load(data)`
+
+從字串建立 schedule 物件。
+
+
+#### `let errorsAndWarnings = shift.validate(schedule, opts)`
 
 解析班表，試著切出合法的工作/休息時段。如果嘗試失敗，會回傳 'invalid' 並且指出錯誤的位置。
 
 * schedule: shift.schedule 建立的班表資料。
-* continueWhenInvalid: 遇到違法時，跳過該區段繼續往下解析
+* opts:
+  * transformed: 變形工時種類，如果不是變形工時就不填。可為：
+    * shit.validate.two_week：兩週變形工時
+    * shit.validate.four_week：四週變形工時
+    * shit.validate.eight_week：八週變形工時
 
-回傳值的解讀方式請參考 **Design** 一節
+##### 回傳值：
+
+```
+[
+  {type: 'warning', msg: '警告內容'},
+  {type: 'error', msg: '錯誤原因', offset: <相對於班表起始時間的位移，單位為分鐘>}
+]
+```
+
 
 #### `let causes = shift.overwork.check(schedule)`
 
@@ -101,7 +114,7 @@ xxxxxxxxxx xxxxxxxxx .....xxxxx .....
 * `x` 代表一分鐘的上班時間
 * `.` 代表一分鐘的休息時間
 
-於是便可用 `tokenizer/lexer` 驗證基本的班表正確性，可參考 `tokenizer.js`。
+於是便可用 `lexer` 驗證基本的班表正確性，可參考 `lexer.js`。
 
 編碼中的空白會被忽略，可用 `#` 寫註解。
 

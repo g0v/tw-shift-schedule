@@ -42,10 +42,13 @@ Schedule.fromTime = function (punches, opts) {
     }
   })
 
-  return new Schedule(header, body)
+  let s = new Schedule(header, body)
+  s.start = header.start
+
+  return s
 }
 
-Schedule.fromData = function (data) {
+Schedule.load = function (data) {
   if (!data.includes('\n--\n')) {
     // no header
     return new Schedule({}, data)
