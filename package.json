@@ -1,6 +1,6 @@
 {
   "name": "tw-shift-schedule",
-  "version": "0.1.1",
+  "version": "1.0.0",
   "description": "班表小幫手",
   "main": "lib/index.js",
   "scripts": {
