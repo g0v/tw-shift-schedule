@@ -1,6 +1,7 @@
 # 班表小幫手
 
 [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
+[![Build Status](https://travis-ci.org/g0v/tw-shift-schedule.svg?branch=master)]
 
 驗證班表是否合法或過勞
 
