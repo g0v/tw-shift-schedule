@@ -1,5 +1,7 @@
 # 班表小幫手
 
+[![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
+
 驗證班表是否合法或過勞
 
 `npm i tw-shift-schedule`
