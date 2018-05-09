@@ -149,7 +149,8 @@ function totalWorkMinutesInOneMonth (startTime, tokens) {
   for (let t of tokens) {
     minutes += t.value.length
     if (t.type === 'work') {
-      workMinutes += t.value.length
+      // 休息時間不計
+      workMinutes += t.value.split('').filter(c => c === 'x').length
     }
 
     if (minutes >= monthMinutes) {

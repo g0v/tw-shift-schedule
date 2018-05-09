@@ -78,7 +78,7 @@ tape('雙週變形工時 - 違法 - 單一工時時段不合法', function (t) {
   t.same(
     validate(schedule, { transformed: validate.transformed.two_week }),
     [
-      { type: 'error', msg: '工時違法', offset: 720 },
+      { type: 'error', msg: '工時違法', offset: 0 },
       { type: 'warning', msg: '班表不完整，無法正確檢驗變形工時' }
     ]
   )
@@ -221,7 +221,7 @@ tape('四週變形工時 - 單一工時時段不合法', function (t) {
   t.same(
     validate(schedule, { transformed: validate.transformed.four_week }),
     [
-      { type: 'error', msg: '工時違法', offset: 720 },
+      { type: 'error', msg: '工時違法', offset: 0 },
       { type: 'warning', msg: 'insufficient schedule length' }
     ]
   )
@@ -463,7 +463,7 @@ tape('八週變形工時 - 單一工時時段不合法', function (t) {
   t.same(
     validate(schedule, { transformed: validate.transformed.eight_week }),
     [
-      { type: 'error', msg: '工時違法', offset: 720 },
+      { type: 'error', msg: '工時違法', offset: 0 },
       { type: 'warning', msg: 'insufficient schedule length' }
     ]
   )

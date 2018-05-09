@@ -91,6 +91,5 @@ function generateSchedule (hourPerDay, day) {
     schedule.push([x.format(format), x.clone().add(hourPerDay, 'hours').format(format)])
   }
 
-  console.log(schedule)
   return schedule
 }

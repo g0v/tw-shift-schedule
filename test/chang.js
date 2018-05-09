@@ -29,7 +29,7 @@ tape('台鐵班表, 不包含整備時間、隱形工時', function (t) {
   let tokens = prettify(moment('2017-12-01 09:36:00'), lexer(s.body))
   t.same(tokens.length, 22)
   t.same(tokens[tokens.length - 1].type, 'invalid')
-  t.ok(tokens[tokens.length - 1].time.isSame(moment('2017-12-14 22:58:00')))
+  t.ok(tokens[tokens.length - 1].time.isSame(moment('2017-12-15 05:25:00')))
 
   t.end()
 })

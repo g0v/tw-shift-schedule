@@ -57,8 +57,7 @@ tape('一班 12 小時又 1 分鐘', function (t) {
 
   let tokens = simplify(lexer(schedule))
   t.same(tokens, [
-    { type: 'work', length: 720 },
-    { type: 'invalid', length: 1 }
+    { type: 'invalid', length: 721 }
   ])
   t.end()
 })
@@ -68,8 +67,17 @@ tape('一班 24 小時', function (t) {
 
   let tokens = simplify(lexer(schedule))
   t.same(tokens, [
-    { type: 'work', length: 720 },
-    { type: 'invalid', length: 720 }
+    { type: 'invalid', length: 1440 }
+  ])
+  t.end()
+})
+
+tape('一班 12 小時工作時間，中間有休息', function (t) {
+  let schedule = 'x'.repeat(6 * 60) + '.'.repeat(2 * 60) + 'x'.repeat(6 * 60)
+
+  let tokens = simplify(lexer(schedule))
+  t.same(tokens, [
+    { type: 'work', length: 840 }
   ])
   t.end()
 })
@@ -94,18 +102,18 @@ tape('一班 12 小時，前 8 休 2 後 2', function (t) {
   t.end()
 })
 
-tape('一班 作 8 休 7 作 8', function (t) {
+tape('一班 作 8 休 7 作 8（當作一班或兩班都違法）', function (t) {
   let schedule = 'x'.repeat(8 * 60) + '.'.repeat(7 * 60) + 'x'.repeat(8 * 60)
 
   let tokens = simplify(lexer(schedule))
   t.same(tokens, [
-    { type: 'work', length: 480 },
-    { type: 'invalid', length: 900 }
+    { type: 'work', length: 900 },
+    { type: 'invalid', length: 480 }
   ])
   t.end()
 })
 
-tape('兩班 作 8 休 8 作 8', function (t) {
+tape('兩班 作 8 休 8 作 8（當作一班就違法，當作兩班就合法）', function (t) {
   let schedule = 'x'.repeat(8 * 60) + '.'.repeat(8 * 60) + 'x'.repeat(8 * 60)
 
   let tokens = simplify(lexer(schedule))
@@ -142,30 +150,18 @@ tape('不完整假日', function (t) {
 
   let tokens = simplify(lexer(schedule))
   t.same(tokens, [
-    { type: 'invalid', length: 1439 }
+    { type: 'rest', length: 1439 }
   ])
   t.end()
 })
 
-tape('invalid without continueWhenError', function (t) {
+tape('休息間隔不足', function (t) {
   let schedule = 'x'.repeat(8 * 60) + '.'.repeat(8 * 60 - 1) + 'x'.repeat(8 * 60)
 
   let tokens = simplify(lexer(schedule))
   t.same(tokens, [
-    { type: 'work', length: 480 },
-    { type: 'invalid', length: 959 }
-  ])
-  t.end()
-})
-
-tape('invalid with continueWhenError', function (t) {
-  let schedule = 'x'.repeat(8 * 60) + '.'.repeat(8 * 60 - 1) + 'x'.repeat(8 * 60)
-
-  let tokens = simplify(lexer(schedule, true))
-  t.same(tokens, [
-    { type: 'work', length: 480 },
-    { type: 'invalid', length: 479 },
-    { type: 'work', length: 480 }
+    { type: 'work', length: 959 },
+    { type: 'invalid', length: 480 }
   ])
   t.end()
 })

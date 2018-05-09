@@ -111,7 +111,7 @@ const Causes = {
 xxxxxxxxxx xxxxxxxxx .....xxxxx .....
 ```
 
-* `x` 代表一分鐘的上班時間
+* `x` 代表一分鐘的工作時間
 * `.` 代表一分鐘的休息時間
 
 於是便可用 `lexer` 驗證基本的班表正確性，可參考 `lexer.js`。
