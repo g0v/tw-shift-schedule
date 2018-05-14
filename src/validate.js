@@ -80,6 +80,7 @@ function validateTwoWeekTransformed (schedule) {
     ret.push({ type: 'warning', msg: '班表不完整，無法正確檢驗變形工時' })
   }
 
+  // TODO: 一個月加班不可超過 46 小時（勞資會議可提高至 56 小時）
   let overworkedMinutesPerMonth = splitByMonth(schedule.start, tokens)
     // 將每月按照每週切開
     .map(([monthStartTime, monthlyTokens]) => {
@@ -133,6 +134,33 @@ function validateFourWeekTransformed (schedule) {
   if (totalTokenLength(tokens) < 60 * 24 * 4 * 7) {
     ret.push({ type: 'warning', msg: '班表不完整，無法正確檢驗變形工時' })
   }
+
+  // TODO: 一個月加班不可超過 46 小時（勞資會議可提高至 56 小時）
+  let overworkedMinutesPerMonth = splitByMonth(schedule.start, tokens)
+    // 將每月按照每週切開
+    .map(([monthStartTime, monthlyTokens]) => {
+      return splitBy7Day(schedule.start, monthStartTime, monthlyTokens)
+    })
+    // 每兩週組成一個變形工時週期
+    .map(tokensPerWeekPerMonth => {
+      return groupWeeklyTokensByNWeek(schedule.start, 4, tokensPerWeekPerMonth)
+    })
+    // 每個週期超過 160 小時的就是加班時間
+    .map(tokensPer4WeekPerMonth => {
+      return tokensPer4WeekPerMonth.map(([splitStartTime, tokensPerWeek]) => {
+        console.log(splitStartTime)
+
+        let workMinutes = totalWorkMinutes(tokensPerWeek)
+        return workMinutes > 160 * 60 ? workMinutes - 160 * 60 : 0
+      })
+    })
+    // 每個月內的加班時間各自加總
+    .map(quadWeeklyOverworkedMinutesPerMonth => {
+      console.log('quad-weekly', quadWeeklyOverworkedMinutesPerMonth)
+      return quadWeeklyOverworkedMinutesPerMonth.reduce((x, y) => x + y, 0)
+    })
+
+  ret = ret.concat(assertMonthlyOverworkedHours(schedule.start, tokens, overworkedMinutesPerMonth, 46 * 60))
   // TODO: 如果班表長度小於一個月，且加班時數小於上限，給一個警告提醒，可能會超過上限
 
   // 四週內要有四個例假
@@ -197,6 +225,7 @@ function totalTokenLength (tokens) {
 }
 
 function groupWeeklyTokensByNWeek (scheduleStartTime, n, tokensPerWeekPerMonth) {
+  // FIXME: 修正八週期跨月的時候會錯
   let group = []
   let grouped = []
   let i = 0
