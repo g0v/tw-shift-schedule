@@ -328,8 +328,7 @@ tape('雙週變形工時 - 空班加班，不超過加班上限', function (t) {
   t.end()
 })
 
-tape('雙週變形工時 - 違法 - 空班加班，超過加班上限', function (t) {
-  // FIXME:
+tape('雙週變形工時 - 違法 - 空班加班，超過單月加班上限', function (t) {
   let schedule = Schedule.fromTime([
     d(0, 12),
     d(1, 12),
@@ -364,9 +363,141 @@ tape('雙週變形工時 - 違法 - 空班加班，超過加班上限', function
 
   t.same(
     validate(schedule, { transformed: validate.transformed.two_week }),
-    []
+    [
+      { type: 'error', offset: 0, msg: '單月加班時數超過上限' }
+    ]
   )
-  t.assert(false)
+  t.end()
+})
+
+tape('雙週變形工時 - 違法 - 第一個月與第二個月都超過加班上限', function (t) {
+  let schedule = Schedule.fromTime([
+    d(0, 12),
+    d(1, 12),
+    d(2, 12),
+    d(3, 12),
+    d(4, 12),
+    // 休兩天
+    d(7, 12),
+    d(8, 12),
+    d(9, 12),
+    d(10, 12),
+    d(11, 12),
+    // 休兩天
+    d(14, 12),
+    d(15, 12),
+    d(16, 12),
+    d(17, 12),
+    d(18, 12),
+    // 休兩天
+    d(21, 12),
+    d(22, 12),
+    d(23, 12),
+    d(24, 12),
+    d(25, 12),
+    // 休兩天
+    d(28, 12),
+    d(29, 12),
+    d(30, 12),
+    d(31, 12),
+    d(32, 12),
+    // 休兩天
+    d(35, 12),
+    d(36, 12),
+    d(37, 12),
+    d(38, 12),
+    d(39, 12),
+    // 休兩天
+    d(42, 12),
+    d(43, 12),
+    d(44, 12),
+    d(45, 12),
+    d(46, 12),
+    // 休兩天
+    d(49, 12),
+    d(50, 12),
+    d(51, 12),
+    d(52, 12),
+    d(53, 12),
+    d(54, 12),
+    // 休一天
+    d(56, 12),
+    d(57, 12),
+    d(58, 12),
+    d(59, 12),
+    d(60, 12)
+  ])
+
+  t.same(
+    validate(schedule, { transformed: validate.transformed.two_week }),
+    [
+      { type: 'error', offset: 0, msg: '單月加班時數超過上限' },
+      { type: 'error', offset: 44640, msg: '單月加班時數超過上限' }
+    ]
+  )
+  t.end()
+})
+
+tape('雙週變形工時 - 違法 - 第一個月合法，第二個月超過加班上限', function (t) {
+  let schedule = Schedule.fromTime([
+    d(0, 12),
+    d(1, 12),
+    d(2, 12),
+    d(3, 12),
+    // 休三天
+    d(7, 12),
+    d(8, 12),
+    d(9, 12),
+    d(10, 12),
+    // 休三天
+    d(14, 12),
+    d(15, 12),
+    d(16, 12),
+    d(17, 12),
+    // 休三天
+    d(21, 12),
+    d(22, 12),
+    d(23, 12),
+    d(24, 12),
+    // 休三天
+    d(28, 12),
+    d(29, 12),
+    d(30, 12),
+    d(31, 12),
+    d(32, 12),
+    // 休兩天
+    d(35, 12),
+    d(36, 12),
+    d(37, 12),
+    d(38, 12),
+    d(39, 12),
+    // 休兩天
+    d(42, 12),
+    d(43, 12),
+    d(44, 12),
+    d(45, 12),
+    d(46, 12),
+    // 休兩天
+    d(49, 12),
+    d(50, 12),
+    d(51, 12),
+    d(52, 12),
+    d(53, 12),
+    d(54, 12),
+    // 休一天
+    d(56, 12),
+    d(57, 12),
+    d(58, 12),
+    d(59, 12),
+    d(60, 12)
+  ])
+
+  t.same(
+    validate(schedule, { transformed: validate.transformed.two_week }),
+    [
+      { type: 'error', offset: 44640, msg: '單月加班時數超過上限' }
+    ]
+  )
   t.end()
 })
 
@@ -929,7 +1060,7 @@ tape('八週變形工時 - 違法 - 單月加班時數超過上限', function (t
   t.end()
 })
 
-function d(dOffset, h) {
+function d (dOffset, h) {
   let start = moment('2018-01-01 08:00:00')
   let format = 'YYYY-MM-DD HH:mm:ss'
   return [

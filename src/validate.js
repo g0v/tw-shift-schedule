@@ -91,7 +91,41 @@ function validateTwoWeekTransformed (schedule) {
     ret.push({ type: 'warning', msg: '班表不完整，無法正確檢驗變形工時' })
   }
 
-  // TODO: 如果班表長度小於一個月，且加班時數小於上限，給一個警告提醒，可能會超過上限
+  let overworkedMinutesPerMonth = splitByMonth(schedule.start, tokens)
+    // 將每月按照每週切開
+    .map(([monthStartTime, monthlyTokens]) => {
+      return splitBy7Day(schedule.start, monthStartTime, monthlyTokens)
+    })
+    // 每兩週組成一個變形工時週期
+    .map(tokensPerWeekPerMonth => {
+      return groupWeeklyTokensByNWeek(schedule.start, 2, tokensPerWeekPerMonth)
+    })
+    // 每個週期超過 80 小時的就是加班時間
+    .map(tokensPer2WeekPerMonth => {
+      return tokensPer2WeekPerMonth.map(([splitStartTime, tokensPerWeek]) => {
+        console.log(splitStartTime)
+
+        let workMinutes = totalWorkMinutes(tokensPerWeek)
+        return workMinutes > 80 * 60 ? workMinutes - 80 * 60 : 0
+      })
+    })
+    // 每個月內的加班時間各自加總
+    .map(biWeeklyOverworkedMinutesPerMonth => {
+      console.log('bi-weekly', biWeeklyOverworkedMinutesPerMonth)
+      return biWeeklyOverworkedMinutesPerMonth.reduce((x, y) => x + y, 0)
+    })
+  let startTimeOfMonth = splitByMonth(schedule.start, tokens)
+    .map(([splitStartTime, monthlyTokens]) => {
+      return splitStartTime
+    })
+
+  for (let i = 0; i < overworkedMinutesPerMonth.length; i++) {
+    let m = overworkedMinutesPerMonth[i]
+    if (m > 46 * 60) {
+      ret.push({ type: 'error', offset: startTimeOfMonth[i].clone().diff(schedule.start, 'minute'), msg: '單月加班時數超過上限' })
+      console.log(i, overworkedMinutesPerMonth[i])
+    }
+  }
 
   // 不可連續工作超過六日
   let e = assertContinuousWorkDay(tokens, 6, '連續工作超過六日')
@@ -183,28 +217,31 @@ function totalTokenLength (tokens) {
   return tokens.map(t => t.value.length).reduce((x, sum) => x + sum, 0)
 }
 
-function splitBy (startTime, tokens, splitter) {
-  let currentTime = startTime.clone()
-  let splitStartTime = startTime.clone()
-  let split = []
-  let splits = []
-  for (let t of tokens) {
-    split.push(t)
+function groupWeeklyTokensByNWeek (scheduleStartTime, n, tokensPerWeekPerMonth) {
+  let group = []
+  let grouped = []
+  let i = 0
+  let groupStartTime
+  for (let weeklyTokens of tokensPerWeekPerMonth) {
+    i += 1
+    let [weekStartTime, tokens] = weeklyTokens
+    if (!groupStartTime) groupStartTime = weekStartTime
+    // console.log('grouping', weekStartTime, tokens)
+    group = group.concat(tokens)
 
-    currentTime.add(t.value.length, 'minute')
-
-    if (splitter(startTime.clone(), splitStartTime, currentTime)) {
-      splits.push([splitStartTime.clone(), split])
-      split = []
-      splitStartTime = currentTime.clone()
+    if (i >= n) {
+      grouped.push([groupStartTime, group])
+      group = []
+      groupStartTime = undefined
+      i = 0
     }
   }
 
-  if (split.length > 0) {
-    splits.push([splitStartTime.clone(), split])
+  if (group.length > 0) {
+    grouped.push([groupStartTime, group])
   }
 
-  return splits
+  return grouped
 }
 
 function splitBy7Day (scheduleStartTime, monthStartTime, tokens) {
