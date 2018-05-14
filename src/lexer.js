@@ -35,15 +35,23 @@ module.exports = function (scheduleData) {
   let workTokens = []
   while (token = lexer.next()) {
     if (token.type === 'fullRest') {
-      minuteWorked = 0
-
+      // 休息了 24 小時那就一定是前一班結束了
       pushWorkTokensIfNotEmpty()
       tokens.push(token)
     }
-    if (token.type === 'rest') {
-      if (token.value.length >= 8 * 60) {
-        minuteWorked = 0
 
+    if (token.type === 'rest') {
+      // 34 條
+      /*
+      勞工工作採輪班制者，其工作班次，每週更換一次。但經勞工同意者不在此限。
+      依前項更換班次時，至少應有連續十一小時之休息時間。但因工作特性或
+      特殊原因，經中央目的事業主管機關商請中央主管機關公告者，得變更休
+      息時間不少於連續八小時。
+      */
+      // TODO: 勞資協商前是 11 小時
+      // 遇到超過輪班間隔底限的休息時斷，就視為前一班已經結束。
+      // 因為把前後兩班視成一班對雇主完全沒好處，應不會有人這樣排。
+      if (token.value.length >= 8 * 60) {
         pushWorkTokensIfNotEmpty()
         tokens.push(token)
       } else {
@@ -68,6 +76,8 @@ module.exports = function (scheduleData) {
   return tokens
 
   function pushWorkTokensIfNotEmpty () {
+    minuteWorked = 0
+
     if (workTokens.length > 0) {
       let combinedWorkToken = { type: 'work', value: '', offset: workTokens[0].offset }
 

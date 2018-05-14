@@ -16,8 +16,7 @@ tape('正常工時 - 不加班', function (t) {
 
   t.same(
     validate(schedule),
-    [
-    ]
+    []
   )
   t.end()
 })
@@ -34,8 +33,7 @@ tape('正常工時 - 加班', function (t) {
 
   t.same(
     validate(schedule),
-    [
-    ]
+    []
   )
   t.end()
 })
@@ -60,6 +58,190 @@ tape('正常工時 - 違法 - 缺例假', function (t) {
   t.end()
 })
 
+tape('正常工時 - 違法 - 一個月加班超過上限', function (t) {
+  let schedule = Schedule.fromTime([
+    d(0, 12),
+    d(1, 12),
+    d(2, 12),
+    d(3, 12),
+    d(4, 12),
+    d(5, 12),
+    // 休一天
+    d(7, 12),
+    d(8, 12),
+    d(9, 12),
+    d(10, 12),
+    d(11, 12),
+    d(12, 12),
+    // 休一天
+    d(14, 12),
+    d(15, 12),
+    d(16, 12),
+    d(17, 12),
+    d(18, 12),
+    d(19, 12),
+    // 休一天
+    d(21, 12),
+    d(22, 12),
+    d(23, 12),
+    d(24, 12),
+    d(25, 12),
+    d(26, 12),
+    // 休一天
+    d(28, 12),
+    d(29, 12),
+    d(30, 12),
+    d(31, 12),
+    d(32, 12),
+    d(33, 12)
+  ])
+
+  t.same(
+    validate(schedule),
+    [
+      { type: 'error', offset: 0, msg: '單月加班時數超過上限' }
+    ]
+  )
+  t.end()
+})
+
+tape('正常工時 - 違法 - 第一個月合法，第二個月加班超過上限', function (t) {
+  let schedule = Schedule.fromTime([
+    d(0, 8),
+    d(1, 8),
+    d(2, 8),
+    d(3, 8),
+    d(4, 8),
+    d(5, 8),
+    // 休一天
+    d(7, 8),
+    d(8, 8),
+    d(9, 8),
+    d(10, 8),
+    d(11, 8),
+    d(12, 8),
+    // 休一天
+    d(14, 8),
+    d(15, 8),
+    d(16, 8),
+    d(17, 8),
+    d(18, 8),
+    d(19, 8),
+    // 休一天
+    d(21, 8),
+    d(22, 8),
+    d(23, 8),
+    d(24, 8),
+    d(25, 8),
+    d(26, 8),
+    // 休一天
+    d(28, 12),
+    d(29, 12),
+    d(30, 12),
+    d(31, 12),
+    d(32, 12),
+    d(33, 12),
+    // 休一天
+    d(35, 12),
+    d(36, 12),
+    d(37, 12),
+    d(38, 12),
+    d(39, 12),
+    d(40, 12),
+    // 休一天
+    d(42, 12),
+    d(43, 12),
+    d(44, 12),
+    d(45, 12),
+    d(46, 12),
+    d(47, 12),
+    // 休一天
+    d(49, 12),
+    d(50, 12),
+    d(51, 12),
+    d(52, 12),
+    d(53, 12),
+    d(54, 12)
+  ])
+
+  t.same(
+    validate(schedule),
+    [
+      { type: 'error', offset: 44640, msg: '單月加班時數超過上限' }
+    ]
+  )
+  t.end()
+})
+
+tape('正常工時 - 違法 - 第一個月跟第二個月加班都超過上限', function (t) {
+  let schedule = Schedule.fromTime([
+    d(0, 12),
+    d(1, 12),
+    d(2, 12),
+    d(3, 12),
+    d(4, 12),
+    d(5, 12),
+    // 休一天
+    d(7, 12),
+    d(8, 12),
+    d(9, 12),
+    d(10, 12),
+    d(11, 12),
+    d(12, 12),
+    // 休一天
+    d(14, 12),
+    d(15, 12),
+    d(16, 12),
+    d(17, 12),
+    d(18, 12),
+    d(19, 12),
+    // 休一天
+    d(21, 12),
+    d(22, 12),
+    d(23, 12),
+    d(24, 12),
+    d(25, 12),
+    d(26, 12),
+    // 休一天
+    d(28, 12),
+    d(29, 12),
+    d(30, 12),
+    d(31, 12),
+    d(32, 12),
+    d(33, 12),
+    // 休一天
+    d(35, 12),
+    d(36, 12),
+    d(37, 12),
+    d(38, 12),
+    d(39, 12),
+    d(40, 12),
+    // 休一天
+    d(42, 12),
+    d(43, 12),
+    d(44, 12),
+    d(45, 12),
+    d(46, 12),
+    d(47, 12),
+    // 休一天
+    d(49, 12),
+    d(50, 12),
+    d(51, 12),
+    d(52, 12),
+    d(53, 12),
+    d(54, 12)
+  ])
+
+  t.same(
+    validate(schedule),
+    [
+      { type: 'error', offset: 0, msg: '單月加班時數超過上限' },
+      { type: 'error', offset: 44640, msg: '單月加班時數超過上限' }
+    ]
+  )
+  t.end()
+})
+
 tape('雙週變形工時 - 長度不足', function (t) {
   let schedule = Schedule.fromTime([d(0, 12)])
 
@@ -72,7 +254,7 @@ tape('雙週變形工時 - 長度不足', function (t) {
   t.end()
 })
 
-tape('雙週變形工時 - 違法 - 單一工時時段不合法', function (t) {
+tape('雙週變形工時 - 違法 - 單一工時時段超過 12 小時', function (t) {
   let schedule = Schedule.fromTime([d(0, 13)])
 
   t.same(
@@ -146,6 +328,48 @@ tape('雙週變形工時 - 空班加班，不超過加班上限', function (t) {
   t.end()
 })
 
+tape('雙週變形工時 - 違法 - 空班加班，超過加班上限', function (t) {
+  // FIXME:
+  let schedule = Schedule.fromTime([
+    d(0, 12),
+    d(1, 12),
+    d(2, 12),
+    d(3, 12),
+    d(4, 12),
+    // 休兩天
+    d(7, 12),
+    d(8, 12),
+    d(9, 12),
+    d(10, 12),
+    d(11, 12),
+    // 休兩天
+    d(14, 12),
+    d(15, 12),
+    d(16, 12),
+    d(17, 12),
+    d(18, 12),
+    // 休兩天
+    d(21, 12),
+    d(22, 12),
+    d(23, 12),
+    d(24, 12),
+    d(25, 12),
+    // 休兩天
+    d(28, 12),
+    d(29, 12),
+    d(30, 12),
+    d(31, 12),
+    d(32, 12)
+  ])
+
+  t.same(
+    validate(schedule, { transformed: validate.transformed.two_week }),
+    []
+  )
+  t.assert(false)
+  t.end()
+})
+
 tape('雙週變形工時 - 合法加班', function (t) {
   let schedule = Schedule.fromTime([
     ['2018-01-01 00:00:00', '2018-01-01 12:00:00'],
@@ -174,7 +398,7 @@ tape('雙週變形工時 - 合法加班', function (t) {
   t.end()
 })
 
-tape('雙週變形工時 - 合法不加班', function (t) {
+tape('雙週變形工時 - 將一天工時挪移到其他天的基本情境', function (t) {
   let schedule = Schedule.fromTime([
     ['2018-01-01 00:00:00', '2018-01-01 10:00:00'],
     ['2018-01-02 00:00:00', '2018-01-02 10:00:00'],
@@ -207,13 +431,13 @@ tape('四週變形工時 - 長度不足', function (t) {
   t.same(
     validate(schedule, { transformed: validate.transformed.four_week }),
     [
-      { type: 'warning', msg: 'insufficient schedule length' }
+      { type: 'warning', msg: '班表不完整，無法正確檢驗變形工時' }
     ]
   )
   t.end()
 })
 
-tape('四週變形工時 - 單一工時時段不合法', function (t) {
+tape('四週變形工時 - 違法 - 單一班超過 12 小時', function (t) {
   let schedule = Schedule.fromTime([
     ['2018-01-01 00:00:00', '2018-01-01 13:00:00']
   ])
@@ -222,7 +446,23 @@ tape('四週變形工時 - 單一工時時段不合法', function (t) {
     validate(schedule, { transformed: validate.transformed.four_week }),
     [
       { type: 'error', msg: '工時違法', offset: 0 },
-      { type: 'warning', msg: 'insufficient schedule length' }
+      { type: 'warning', msg: '班表不完整，無法正確檢驗變形工時' }
+    ]
+  )
+  t.end()
+})
+
+tape('四週變形工時 - 違法 - 單一班超過 12 小時 - 中間有休息', function (t) {
+  let schedule = Schedule.fromTime([
+    ['2018-01-01 00:00:00', '2018-01-01 06:00:00'],
+    ['2018-01-01 07:00:00', '2018-01-01 14:00:00']
+  ])
+
+  t.same(
+    validate(schedule, { transformed: validate.transformed.four_week }),
+    [
+      { type: 'error', msg: '工時違法', offset: 420 },
+      { type: 'warning', msg: '班表不完整，無法正確檢驗變形工時' }
     ]
   )
   t.end()
@@ -257,7 +497,7 @@ tape('四週變形工時 - 合法', function (t) {
   t.same(
     validate(schedule, { transformed: validate.transformed.four_week }),
     [
-      { type: 'warning', msg: 'insufficient schedule length' }
+      { type: 'warning', msg: '班表不完整，無法正確檢驗變形工時' }
     ]
   )
   t.end()
@@ -295,7 +535,7 @@ tape('四週變形工時 - 合法連上 24 天', function (t) {
   t.same(
     validate(schedule, { transformed: validate.transformed.four_week }),
     [
-      { type: 'warning', msg: 'insufficient schedule length' }
+      { type: 'warning', msg: '班表不完整，無法正確檢驗變形工時' }
     ]
   )
   t.end()
@@ -334,7 +574,7 @@ tape('四週變形工時 - 四周內休息日都在加班', function (t) {
   t.same(
     validate(schedule, { transformed: validate.transformed.four_week }),
     [
-      { type: 'warning', msg: 'insufficient schedule length' }
+      { type: 'warning', msg: '班表不完整，無法正確檢驗變形工時' }
     ]
   )
   t.end()
@@ -375,10 +615,16 @@ tape('四週變形工時 - 兩周內例假不足', function (t) {
   t.same(
     validate(schedule, { transformed: validate.transformed.four_week }),
     [
-      { type: 'warning', msg: 'insufficient schedule length' },
+      { type: 'warning', msg: '班表不完整，無法正確檢驗變形工時' },
       { type: 'error', msg: '每兩週內應有兩個例假', offset: 18720 }
     ]
   )
+  t.end()
+})
+
+tape('四週變形工時 - 違法 - 單月加班超過上限', function (t) {
+  // FIXME:
+  t.assert(false)
   t.end()
 })
 
@@ -390,7 +636,7 @@ tape('八週變形工時 - 長度不足', function (t) {
   t.same(
     validate(schedule, { transformed: validate.transformed.eight_week }),
     [
-      { type: 'warning', msg: 'insufficient schedule length' }
+      { type: 'warning', msg: '班表不完整，無法正確檢驗變形工時' }
     ]
   )
   t.end()
@@ -455,7 +701,7 @@ tape('八週變形工時 - 合法不加班', function (t) {
   t.end()
 })
 
-tape('八週變形工時 - 單一工時時段不合法', function (t) {
+tape('八週變形工時 - 違法 - 單一工時時段不合法', function (t) {
   let schedule = Schedule.fromTime([
     ['2018-01-01 00:00:00', '2018-01-01 13:00:00']
   ])
@@ -464,13 +710,13 @@ tape('八週變形工時 - 單一工時時段不合法', function (t) {
     validate(schedule, { transformed: validate.transformed.eight_week }),
     [
       { type: 'error', msg: '工時違法', offset: 0 },
-      { type: 'warning', msg: 'insufficient schedule length' }
+      { type: 'warning', msg: '班表不完整，無法正確檢驗變形工時' }
     ]
   )
   t.end()
 })
 
-tape('八週變形工時 - 連續工作超過六日', function (t) {
+tape('八週變形工時 - 違法 - 連續工作超過六日', function (t) {
   let schedule = Schedule.fromTime([
     ['2018-01-01 00:00:00', '2018-01-01 12:00:00'],
     ['2018-01-02 00:00:00', '2018-01-02 12:00:00'],
@@ -484,7 +730,7 @@ tape('八週變形工時 - 連續工作超過六日', function (t) {
   t.same(
     validate(schedule, { transformed: validate.transformed.eight_week }),
     [
-      { type: 'warning', msg: 'insufficient schedule length' },
+      { type: 'warning', msg: '班表不完整，無法正確檢驗變形工時' },
       { type: 'error', msg: '連續工作超過六日', offset: 8640 }
     ]
   )
@@ -545,7 +791,7 @@ tape('八週變形工時 - 合法加班', function (t) {
   t.same(
     validate(schedule, { transformed: validate.transformed.eight_week }),
     [
-      { type: 'warning', msg: 'insufficient schedule length' }
+      { type: 'warning', msg: '班表不完整，無法正確檢驗變形工時' }
     ]
   )
   t.end()
@@ -613,13 +859,13 @@ tape('八週變形工時 - 休息日都在加班', function (t) {
   t.same(
     validate(schedule, { transformed: validate.transformed.eight_week }),
     [
-      { type: 'warning', msg: 'insufficient schedule length' }
+      { type: 'warning', msg: '班表不完整，無法正確檢驗變形工時' }
     ]
   )
   t.end()
 })
 
-tape('八週變形工時 - 合法不加班', function (t) {
+tape('八週變形工時 - 合法班表範例 - 不加班', function (t) {
   let schedule = Schedule.fromTime([
     ['2018-01-01 00:00:00', '2018-01-01 10:00:00'],
     ['2018-01-02 00:00:00', '2018-01-02 10:00:00'],
@@ -678,8 +924,13 @@ tape('八週變形工時 - 合法不加班', function (t) {
   t.end()
 })
 
-function d (dOffset, h) {
-  let start = moment('2018-01-01 00:00:00')
+tape('八週變形工時 - 違法 - 單月加班時數超過上限', function (t) {
+  t.assert(false)
+  t.end()
+})
+
+function d(dOffset, h) {
+  let start = moment('2018-01-01 08:00:00')
   let format = 'YYYY-MM-DD HH:mm:ss'
   return [
     start.clone().add(dOffset, 'days').format(format),
