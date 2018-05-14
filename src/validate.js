@@ -54,18 +54,7 @@ function validateNormal (schedule) {
       return weeklyOverworkedMinutesPerMonth.reduce((x, y) => x + y, 0)
     })
 
-  let startTimeOfMonth = splitByMonth(schedule.start, tokens)
-    .map(([splitStartTime, monthlyTokens]) => {
-      return splitStartTime
-    })
-
-  for (let i = 0; i < overworkedMinutesPerMonth.length; i++) {
-    let m = overworkedMinutesPerMonth[i]
-    if (m > 46 * 60) {
-      ret.push({ type: 'error', offset: startTimeOfMonth[i].clone().diff(schedule.start, 'minute'), msg: '單月加班時數超過上限' })
-      console.log(i, overworkedMinutesPerMonth[i])
-    }
-  }
+  ret = ret.concat(assertMonthlyOverworkedHours(schedule.start, tokens, overworkedMinutesPerMonth, 46 * 60))
 
   console.log(overworkedMinutesPerMonth)
 
@@ -114,18 +103,8 @@ function validateTwoWeekTransformed (schedule) {
       console.log('bi-weekly', biWeeklyOverworkedMinutesPerMonth)
       return biWeeklyOverworkedMinutesPerMonth.reduce((x, y) => x + y, 0)
     })
-  let startTimeOfMonth = splitByMonth(schedule.start, tokens)
-    .map(([splitStartTime, monthlyTokens]) => {
-      return splitStartTime
-    })
 
-  for (let i = 0; i < overworkedMinutesPerMonth.length; i++) {
-    let m = overworkedMinutesPerMonth[i]
-    if (m > 46 * 60) {
-      ret.push({ type: 'error', offset: startTimeOfMonth[i].clone().diff(schedule.start, 'minute'), msg: '單月加班時數超過上限' })
-      console.log(i, overworkedMinutesPerMonth[i])
-    }
-  }
+  ret = ret.concat(assertMonthlyOverworkedHours(schedule.start, tokens, overworkedMinutesPerMonth, 46 * 60))
 
   // 不可連續工作超過六日
   let e = assertContinuousWorkDay(tokens, 6, '連續工作超過六日')
@@ -362,6 +341,24 @@ function assertMaxWorkDayCountInPeriod (tokens, period, maxWorkDayCount, msg) {
       workday = 0
     }
   }
+}
+
+function assertMonthlyOverworkedHours (scheduleStartTime, tokens, overworkedMinutesPerMonth, limit) {
+  let es = []
+  let startTimeOfMonth = splitByMonth(scheduleStartTime, tokens)
+    .map(([splitStartTime, monthlyTokens]) => {
+      return splitStartTime
+    })
+
+  for (let i = 0; i < overworkedMinutesPerMonth.length; i++) {
+    let m = overworkedMinutesPerMonth[i]
+    if (m > limit) {
+      es.push({ type: 'error', offset: startTimeOfMonth[i].clone().diff(scheduleStartTime, 'minute'), msg: '單月加班時數超過上限' })
+      console.log(i, overworkedMinutesPerMonth[i])
+    }
+  }
+
+  return es
 }
 
 module.exports = validate
