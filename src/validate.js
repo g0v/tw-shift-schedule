@@ -92,10 +92,10 @@ function validateTwoWeekTransformed (schedule) {
     })
     // 每個週期超過 80 小時的就是加班時間
     .map(tokensPer2WeekPerMonth => {
-      return tokensPer2WeekPerMonth.map(([splitStartTime, tokensPerWeek]) => {
+      return tokensPer2WeekPerMonth.map(([splitStartTime, tokensPer2Week]) => {
         console.log(splitStartTime)
 
-        let workMinutes = totalWorkMinutes(tokensPerWeek)
+        let workMinutes = totalWorkMinutes(tokensPer2Week)
         return workMinutes > 80 * 60 ? workMinutes - 80 * 60 : 0
       })
     })
@@ -147,10 +147,10 @@ function validateFourWeekTransformed (schedule) {
     })
     // 每個週期超過 160 小時的就是加班時間
     .map(tokensPer4WeekPerMonth => {
-      return tokensPer4WeekPerMonth.map(([splitStartTime, tokensPerWeek]) => {
+      return tokensPer4WeekPerMonth.map(([splitStartTime, tokensPer4Week]) => {
         console.log(splitStartTime)
 
-        let workMinutes = totalWorkMinutes(tokensPerWeek)
+        let workMinutes = totalWorkMinutes(tokensPer4Week)
         return workMinutes > 160 * 60 ? workMinutes - 160 * 60 : 0
       })
     })
@@ -191,6 +191,27 @@ function validateEightWeekTransformed (schedule) {
     ret.push({ type: 'warning', msg: '班表不完整，無法正確檢驗變形工時' })
   }
   // TODO: 如果班表長度小於一個月，且加班時數小於上限，給一個警告提醒，可能會超過上限
+  let weeklyTokens = splitBy7Day(schedule.start, schedule.start, tokens)
+  console.log(weeklyTokens)
+  let periodlyTokens = groupWeeklyTokensByNWeek(schedule.start, 8, weeklyTokens)
+  console.log(periodlyTokens)
+  let overworkedMinutesPerPeriod = periodlyTokens.map(period => {
+    let tokensPerPeriod = period[1]
+    let workMinutes = totalWorkMinutes(tokensPerPeriod)
+    return workMinutes > 320 * 60 ? workMinutes - 320 * 60 : 0
+  })
+  console.log('overwork', overworkedMinutesPerPeriod)
+
+  for (let i = 0; i < periodlyTokens.length; i++) {
+    let [periodStartTime, periodTokens] = periodlyTokens[i]
+    let m = overworkedMinutesPerPeriod[i]
+    // XXX: 因為八週變形工時跨月，可以任意將休息日安排在兩月的任一天中，所以無法精確知道每個月的加班時數
+    // 因此，這邊直接用「是否超過兩個月的加班上限」來計算
+    if (m > 46 * 60 * 2) {
+      ret.push({ type: 'error', offset: periodStartTime.clone().diff(schedule.start, 'minute'), msg: '單月加班時數超過上限' })
+      console.log(i, m)
+    }
+  }
 
   // 不可連續工作超過六日
   let e = assertContinuousWorkDay(tokens, 6, '連續工作超過六日')
@@ -225,24 +246,22 @@ function totalTokenLength (tokens) {
 }
 
 function groupWeeklyTokensByNWeek (scheduleStartTime, n, tokensPerWeekPerMonth) {
-  // FIXME: 修正八週期跨月的時候會錯
   let group = []
   let grouped = []
-  let i = 0
   let groupStartTime
   for (let weeklyTokens of tokensPerWeekPerMonth) {
-    i += 1
     let [weekStartTime, tokens] = weeklyTokens
     if (!groupStartTime) groupStartTime = weekStartTime
-    // console.log('grouping', weekStartTime, tokens)
-    group = group.concat(tokens)
 
-    if (i >= n) {
+    let weekPassed = weekStartTime.diff(groupStartTime, 'week')
+    console.log('weekpassed', groupStartTime, weekStartTime, weekPassed, n)
+    // console.log('grouping', weekStartTime, tokens)
+    if (weekPassed >= n) {
       grouped.push([groupStartTime, group])
       group = []
-      groupStartTime = undefined
-      i = 0
+      groupStartTime = weekStartTime
     }
+    group = group.concat(tokens)
   }
 
   if (group.length > 0) {
