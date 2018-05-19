@@ -1,7 +1,8 @@
 const tape = require('tape')
 const Schedule = require('../src/schedule')
-const lexer = require('../src/lexer')
 const moment = require('moment')
+const validate = require('../src/validate')
+const { same } = require('./util')
 
 tape('台鐵班表, 不包含整備時間、隱形工時', function (t) {
   let s = Schedule.fromTime([
@@ -26,18 +27,14 @@ tape('台鐵班表, 不包含整備時間、隱形工時', function (t) {
     ['2017-12-22 09:00:00', '2017-12-22 09:34:00']
   ])
 
-  let tokens = prettify(moment('2017-12-01 09:36:00'), lexer(s.body))
-  t.same(tokens.length, 22)
-  t.same(tokens[tokens.length - 1].type, 'invalid')
-  t.ok(tokens[tokens.length - 1].time.isSame(moment('2017-12-15 05:25:00')))
+  let results = validate(s)
+  same(
+    t,
+    results,
+    [
+      { type: 'error', msg: '工時違法', offset: 19909, time: moment('2017-12-15T05:25:00.000') }
+    ]
+  )
 
   t.end()
 })
-
-function prettify (startTime, tokens) {
-  return tokens.map(t => { return { type: t.type, length: t.value.length, line: t.line, time: offset2time(startTime, t.offset) } })
-}
-
-function offset2time (startTime, offset) {
-  return startTime.clone().add(offset, 'minutes')
-}

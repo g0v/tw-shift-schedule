@@ -7,21 +7,33 @@ const transformed = {
 }
 
 function validate (schedule, opts) {
-  if (!opts || !opts.transformed) {
-    return validateNormal(schedule)
-  }
+  var ret
+  if (!opts) opts = {}
 
   // FIXME: 如果班表的開頭不是變形工時週期的開頭，會無法正確判斷
   switch (opts.transformed) {
+    case undefined:
+      ret = validateNormal(schedule)
+      break
     case transformed.two_week:
-      return validateTwoWeekTransformed(schedule)
+      ret = validateTwoWeekTransformed(schedule)
+      break
     case transformed.four_week:
-      return validateFourWeekTransformed(schedule)
+      ret = validateFourWeekTransformed(schedule)
+      break
     case transformed.eight_week:
-      return validateEightWeekTransformed(schedule)
+      ret = validateEightWeekTransformed(schedule)
+      break
+    default:
+      throw (new Error('Invalid transform: ', opts.transformed))
+  }
+  for (let i = 0; i < ret.length; i++) {
+    if (ret[i].type === 'error') {
+      ret[i].time = offset2time(schedule.start, ret[i].offset)
+    }
   }
 
-  throw (new Error('Invalid transform: ', opts.transformed))
+  return ret
 }
 
 function validateNormal (schedule) {
@@ -407,6 +419,13 @@ function assertMonthlyOverworkedHours (scheduleStartTime, tokens, overworkedMinu
   }
 
   return es
+}
+
+function offset2time (scheduleStartTime, offset) {
+  if (!scheduleStartTime) {
+    return undefined
+  }
+  return scheduleStartTime.clone().add(offset, 'minute')
 }
 
 module.exports = validate

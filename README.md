@@ -34,8 +34,8 @@ let schedule = shift.Schedule.fromTime([
   ['2017-12-22 09:00:00', '2017-12-22 09:34:00']
 ], moment.ISO_8601)
 
-let tokens = shift.tokenizer(schedule)
-console.log(tokens) // 切出的 上班/下班區段，若有不合法會回傳 invalid
+let results = shift.validate(schedule)
+console.log(results) // 檢驗結果
 ```
 
 `test` 資料夾下有其他範例
@@ -67,7 +67,7 @@ const shift = require('tw-shift-schedule')
 
 #### `let errorsAndWarnings = shift.validate(schedule, opts)`
 
-解析班表，試著切出合法的工作/休息時段。如果嘗試失敗，會回傳 'invalid' 並且指出錯誤的位置。
+解析班表並且回傳班表是否違法。
 
 * schedule: shift.schedule 建立的班表資料。
 * opts:
