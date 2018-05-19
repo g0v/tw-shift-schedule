@@ -54,21 +54,16 @@ function validateNormal (schedule) {
     // 每週超過 40 小時的就是加班時間
     .map(tokensPerWeekPerMonth => {
       return tokensPerWeekPerMonth.map(([splitStartTime, tokensPerWeek]) => {
-        console.log(splitStartTime)
-
         let workMinutes = totalWorkMinutes(tokensPerWeek)
         return workMinutes > 40 * 60 ? workMinutes - 40 * 60 : 0
       })
     })
     // 每個月內的加班時間各自加總
     .map(weeklyOverworkedMinutesPerMonth => {
-      console.log('weekly', weeklyOverworkedMinutesPerMonth)
       return weeklyOverworkedMinutesPerMonth.reduce((x, y) => x + y, 0)
     })
 
   ret = ret.concat(assertMonthlyOverworkedHours(schedule.start, tokens, overworkedMinutesPerMonth, 46 * 60))
-
-  console.log(overworkedMinutesPerMonth)
 
   // 一週內要有一個例假
   let e = assertMaxWorkDayCountInPeriod(tokens, 7, 6, '每週至少要有一個例假')
@@ -105,15 +100,12 @@ function validateTwoWeekTransformed (schedule) {
     // 每個週期超過 80 小時的就是加班時間
     .map(tokensPer2WeekPerMonth => {
       return tokensPer2WeekPerMonth.map(([splitStartTime, tokensPer2Week]) => {
-        console.log(splitStartTime)
-
         let workMinutes = totalWorkMinutes(tokensPer2Week)
         return workMinutes > 80 * 60 ? workMinutes - 80 * 60 : 0
       })
     })
     // 每個月內的加班時間各自加總
     .map(biWeeklyOverworkedMinutesPerMonth => {
-      console.log('bi-weekly', biWeeklyOverworkedMinutesPerMonth)
       return biWeeklyOverworkedMinutesPerMonth.reduce((x, y) => x + y, 0)
     })
 
@@ -160,15 +152,12 @@ function validateFourWeekTransformed (schedule) {
     // 每個週期超過 160 小時的就是加班時間
     .map(tokensPer4WeekPerMonth => {
       return tokensPer4WeekPerMonth.map(([splitStartTime, tokensPer4Week]) => {
-        console.log(splitStartTime)
-
         let workMinutes = totalWorkMinutes(tokensPer4Week)
         return workMinutes > 160 * 60 ? workMinutes - 160 * 60 : 0
       })
     })
     // 每個月內的加班時間各自加總
     .map(quadWeeklyOverworkedMinutesPerMonth => {
-      console.log('quad-weekly', quadWeeklyOverworkedMinutesPerMonth)
       return quadWeeklyOverworkedMinutesPerMonth.reduce((x, y) => x + y, 0)
     })
 
@@ -204,15 +193,12 @@ function validateEightWeekTransformed (schedule) {
   }
   // TODO: 如果班表長度小於一個月，且加班時數小於上限，給一個警告提醒，可能會超過上限
   let weeklyTokens = splitBy7Day(schedule.start, schedule.start, tokens)
-  console.log(weeklyTokens)
   let periodlyTokens = groupWeeklyTokensByNWeek(schedule.start, 8, weeklyTokens)
-  console.log(periodlyTokens)
   let overworkedMinutesPerPeriod = periodlyTokens.map(period => {
     let tokensPerPeriod = period[1]
     let workMinutes = totalWorkMinutes(tokensPerPeriod)
     return workMinutes > 320 * 60 ? workMinutes - 320 * 60 : 0
   })
-  console.log('overwork', overworkedMinutesPerPeriod)
 
   for (let i = 0; i < periodlyTokens.length; i++) {
     let [periodStartTime, periodTokens] = periodlyTokens[i]
@@ -221,7 +207,6 @@ function validateEightWeekTransformed (schedule) {
     // 因此，這邊直接用「是否超過兩個月的加班上限」來計算
     if (m > 46 * 60 * 2) {
       ret.push({ type: 'error', offset: periodStartTime.clone().diff(schedule.start, 'minute'), msg: '單月加班時數超過上限' })
-      console.log(i, m)
     }
   }
 
@@ -266,8 +251,6 @@ function groupWeeklyTokensByNWeek (scheduleStartTime, n, tokensPerWeekPerMonth) 
     if (!groupStartTime) groupStartTime = weekStartTime
 
     let weekPassed = weekStartTime.diff(groupStartTime, 'week')
-    console.log('weekpassed', groupStartTime, weekStartTime, weekPassed, n)
-    // console.log('grouping', weekStartTime, tokens)
     if (weekPassed >= n) {
       grouped.push([groupStartTime, group])
       group = []
@@ -332,8 +315,6 @@ function splitByMonth (startTime, tokens) {
 }
 
 function totalWorkMinutes (tokens) {
-  console.log('---')
-  console.log(tokens.map(t => { return { type: t.type, value: t.value.length, offset: t.offset } }))
   let workMinutes = 0
   for (let t of tokens) {
     if (t.type === 'work') {
@@ -342,7 +323,6 @@ function totalWorkMinutes (tokens) {
     }
   }
 
-  console.log('total', workMinutes)
   return workMinutes
 }
 
@@ -414,7 +394,6 @@ function assertMonthlyOverworkedHours (scheduleStartTime, tokens, overworkedMinu
     let m = overworkedMinutesPerMonth[i]
     if (m > limit) {
       es.push({ type: 'error', offset: startTimeOfMonth[i].clone().diff(scheduleStartTime, 'minute'), msg: '單月加班時數超過上限' })
-      console.log(i, overworkedMinutesPerMonth[i])
     }
   }
 
