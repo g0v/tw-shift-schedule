@@ -104,7 +104,7 @@ tape('正常工時 - 違法 - 一個月加班超過上限', function (t) {
     t,
     validate(schedule),
     [
-      { type: 'error', offset: 0, msg: '單月加班時數超過上限', time: moment('2018-01-01T08:00:00.000') }
+      { type: 'error', offset: 0, msg: '單月加班時數超過上限', time: moment('2018-01-01T08:00:00.000'), value: 128 }
     ]
   )
   t.end()
@@ -173,7 +173,7 @@ tape('正常工時 - 違法 - 第一個月合法，第二個月加班超過上�
     t,
     validate(schedule),
     [
-      { type: 'error', offset: 44640, msg: '單月加班時數超過上限', time: moment('2018-02-01T08:00:00.000') }
+      { type: 'error', offset: 44640, msg: '單月加班時數超過上限', time: moment('2018-02-01T08:00:00.000'), value: 96 }
     ]
   )
   t.end()
@@ -242,8 +242,8 @@ tape('正常工時 - 違法 - 第一個月跟第二個月加班都超過上限',
     t,
     validate(schedule),
     [
-      { type: 'error', offset: 0, msg: '單月加班時數超過上限', time: moment('2018-01-01T08:00:00.000') },
-      { type: 'error', offset: 44640, msg: '單月加班時數超過上限', time: moment('2018-02-01T08:00:00.000') }
+      { type: 'error', offset: 0, msg: '單月加班時數超過上限', time: moment('2018-01-01T08:00:00.000'), value: 128 },
+      { type: 'error', offset: 44640, msg: '單月加班時數超過上限', time: moment('2018-02-01T08:00:00.000'), value: 96 }
     ]
   )
   t.end()
@@ -376,7 +376,7 @@ tape('雙週變形工時 - 違法 - 空班加班，超過單月加班上限', fu
     t,
     validate(schedule, { transformed: validate.transformed.two_week }),
     [
-      { type: 'error', offset: 0, msg: '單月加班時數超過上限', time: moment('2018-01-01T08:00:00.000') }
+      { type: 'error', offset: 0, msg: '單月加班時數超過上限', time: moment('2018-01-01T08:00:00.000'), value: 80 }
     ]
   )
   t.end()
@@ -444,8 +444,8 @@ tape('雙週變形工時 - 違法 - 第一個月與第二個月都超過加班�
     t,
     validate(schedule, { transformed: validate.transformed.two_week }),
     [
-      { type: 'error', offset: 0, msg: '單月加班時數超過上限', time: moment('2018-01-01T08:00:00.000') },
-      { type: 'error', offset: 44640, msg: '單月加班時數超過上限', time: moment('2018-02-01T08:00:00.000') }
+      { type: 'error', offset: 0, msg: '單月加班時數超過上限', time: moment('2018-01-01T08:00:00.000'), value: 80 },
+      { type: 'error', offset: 44640, msg: '單月加班時數超過上限', time: moment('2018-02-01T08:00:00.000'), value: 92 }
     ]
   )
   t.end()
@@ -509,7 +509,7 @@ tape('雙週變形工時 - 違法 - 第一個月合法，第二個月超過加�
     t,
     validate(schedule, { transformed: validate.transformed.two_week }),
     [
-      { type: 'error', offset: 44640, msg: '單月加班時數超過上限', time: moment('2018-02-01T08:00:00.000') }
+      { type: 'error', offset: 44640, msg: '單月加班時數超過上限', time: moment('2018-02-01T08:00:00.000'), value: 92 }
     ]
   )
   t.end()
@@ -816,7 +816,7 @@ tape('四週變形工時 - 違法 - 單月加班超過上限', function (t) {
     validate(schedule, { transformed: validate.transformed.four_week }),
     [
       { type: 'warning', msg: '班表不完整，無法正確檢驗變形工時' },
-      { type: 'error', offset: 0, msg: '單月加班時數超過上限', time: moment('2018-01-01T00:00:00.000') }
+      { type: 'error', offset: 0, msg: '單月加班時數超過上限', time: moment('2018-01-01T00:00:00.000'), value: 92 }
     ]
   )
   t.end()
@@ -1060,7 +1060,7 @@ tape('八週變形工時 - 違法 - 休息日都在加班 - 超過加班上限',
     validate(schedule, { transformed: validate.transformed.eight_week }),
     [
       { type: 'warning', msg: '班表不完整，無法正確檢驗變形工時' },
-      { type: 'error', offset: 0, msg: '單月加班時數超過上限', time: moment('2018-01-01T00:00:00.000') }
+      { type: 'error', offset: 0, msg: '單月加班時數超過上限', time: moment('2018-01-01T00:00:00.000'), value: 160 }
     ]
   )
   t.end()

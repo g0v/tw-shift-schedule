@@ -206,7 +206,7 @@ function validateEightWeekTransformed (schedule) {
     // XXX: 因為八週變形工時跨月，可以任意將休息日安排在兩月的任一天中，所以無法精確知道每個月的加班時數
     // 因此，這邊直接用「是否超過兩個月的加班上限」來計算
     if (m > 46 * 60 * 2) {
-      ret.push({ type: 'error', offset: periodStartTime.clone().diff(schedule.start, 'minute'), msg: '單月加班時數超過上限' })
+      ret.push({ type: 'error', offset: periodStartTime.clone().diff(schedule.start, 'minute'), msg: '單月加班時數超過上限', value: m / 60 })
     }
   }
 
@@ -393,7 +393,7 @@ function assertMonthlyOverworkedHours (scheduleStartTime, tokens, overworkedMinu
   for (let i = 0; i < overworkedMinutesPerMonth.length; i++) {
     let m = overworkedMinutesPerMonth[i]
     if (m > limit) {
-      es.push({ type: 'error', offset: startTimeOfMonth[i].clone().diff(scheduleStartTime, 'minute'), msg: '單月加班時數超過上限' })
+      es.push({ type: 'error', offset: startTimeOfMonth[i].clone().diff(scheduleStartTime, 'minute'), msg: '單月加班時數超過上限', value: m / 60 })
     }
   }
 
