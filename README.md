@@ -72,9 +72,9 @@ const shift = require('tw-shift-schedule')
 * schedule: shift.schedule 建立的班表資料。
 * opts:
   * transformed: 變形工時種類，如果不是變形工時就不填。可為：
-    * shit.validate.two_week：兩週變形工時
-    * shit.validate.four_week：四週變形工時
-    * shit.validate.eight_week：八週變形工時
+    * `shift.validate.two_week`：兩週變形工時
+    * `shift.validate.four_week`：四週變形工時
+    * `shift.validate.eight_week`：八週變形工時
 
 ##### 回傳值：
 
