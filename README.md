@@ -81,7 +81,7 @@ const shift = require('tw-shift-schedule')
 ```
 [
   {type: 'warning', msg: '警告內容'},
-  {type: 'error', msg: '錯誤原因', offset: <相對於班表起始時間的位移，單位為分鐘>}
+  {type: 'error', msg: '錯誤原因', offset: <相對於班表起始時間的位移，單位為分鐘>, time: <錯誤時間>}
 ]
 ```
 
