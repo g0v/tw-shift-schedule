@@ -106,7 +106,7 @@ const Causes = {
 }
 ```
 
-## Design
+## Internal Data Structure
 
 此套件將班表編碼成如下格式：
 
@@ -118,8 +118,6 @@ xxxxxxxxxx xxxxxxxxx .....xxxxx .....
 * `.` 代表一分鐘的休息時間
 
 於是便可用 `lexer` 驗證基本的班表正確性，可參考 `lexer.js`。
-
-編碼中的空白會被忽略，可用 `#` 寫註解。
 
 ## License
 
