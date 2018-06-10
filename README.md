@@ -119,6 +119,8 @@ xxxxxxxxxx xxxxxxxxx .....xxxxx .....
 
 於是便可用 `lexer` 驗證基本的班表正確性，可參考 `lexer.js`。
 
+編碼中的空白會被忽略，可用 `#` 寫註解。
+
 ## License
 
 The MIT License
