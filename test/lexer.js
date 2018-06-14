@@ -172,7 +172,7 @@ tape('單週正常工時 - 每週五天 8 小時', function (t) {
 
   let schedule = workday + workday + workday + workday + workday + restDay + restDay
 
-  let tokens = simplify(lexer(schedule, true))
+  let tokens = simplify(lexer(schedule))
   t.same(tokens, [
     { type: 'work', length: 480 },
     { type: 'rest', length: 960 },
@@ -194,7 +194,7 @@ tape('兩週變形工時 - 每週四天 10 小時', function (t) {
 
   let schedule = workday + workday + workday + workday + restDay + restDay + restDay
 
-  let tokens = simplify(lexer(schedule, true))
+  let tokens = simplify(lexer(schedule))
   t.same(tokens, [
     { type: 'work', length: 600 },
     { type: 'rest', length: 840 },
@@ -214,7 +214,7 @@ tape('兩週變形工時 - 每週四天 10 小時，中間有休息 2 小時', f
 
   let schedule = workday + workday + workday + workday + restDay + restDay + restDay
 
-  let tokens = simplify(lexer(schedule, true))
+  let tokens = simplify(lexer(schedule))
   t.same(tokens, [
     { type: 'work', length: 720 },
     { type: 'rest', length: 840 },
@@ -234,7 +234,7 @@ tape('四週變形工時 - 做二休二', function (t) {
 
   let schedule = workday + workday + restDay + restDay + workday + workday + restDay + restDay
 
-  let tokens = simplify(lexer(schedule, true))
+  let tokens = simplify(lexer(schedule))
   t.same(tokens, [
     { type: 'work', length: 720 },
     { type: 'rest', length: 720 },
@@ -254,7 +254,7 @@ tape('八週變形工時 - 休息日集中最後兩週', function (t) {
   let workWeek = workday.repeat(6) + restDay
   let schedule = workWeek.repeat(6) + workday.repeat(4) + restDay.repeat(10)
 
-  let tokens = simplify(lexer(schedule, true))
+  let tokens = simplify(lexer(schedule))
   t.same(tokens, [
     // 第一週
     { type: 'work', length: 540 },
