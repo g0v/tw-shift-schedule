@@ -13,16 +13,16 @@ function validate (schedule, opts) {
   // FIXME: 如果班表的開頭不是變形工時週期的開頭，會無法正確判斷
   switch (opts.transformed) {
     case undefined:
-      ret = validateNormal(schedule)
+      ret = validateNormal(schedule, opts)
       break
     case transformed.two_week:
-      ret = validateTwoWeekTransformed(schedule)
+      ret = validateTwoWeekTransformed(schedule, opts)
       break
     case transformed.four_week:
-      ret = validateFourWeekTransformed(schedule)
+      ret = validateFourWeekTransformed(schedule, opts)
       break
     case transformed.eight_week:
-      ret = validateEightWeekTransformed(schedule)
+      ret = validateEightWeekTransformed(schedule, opts)
       break
     default:
       throw (new Error('Invalid transform: ', opts.transformed))

@@ -75,6 +75,7 @@ const shift = require('tw-shift-schedule')
     * `shift.validate.two_week`：兩週變形工時
     * `shift.validate.four_week`：四週變形工時
     * `shift.validate.eight_week`：八週變形工時
+  * min_between_shift: 兩班之間最少休息時間（小時），預設為 8，根據勞基法可因為勞資協商而介於 8~11 之間。
 
 ##### 回傳值：
 

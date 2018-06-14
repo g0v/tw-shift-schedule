@@ -8,7 +8,10 @@ var moo = require('moo')
 // lexer 只負責檢查「單一工作時段是否合法」
 // 多個工作時段之間的關係，例如：每週含加班工時上限 72 小時、變形工時的休假日數等，不在此檢查
 // **note: 因為變形工時不會增加工作時數，單日工時上限也相同，因此 lexer 一定要通過才有可能是合法的變形工時
-module.exports = function (scheduleData) {
+module.exports = function (scheduleData, opts) {
+  if (!opts) opts = {}
+  if (!opts.min_between_shift) opts.min_between_shift = 8
+
   let lexer = moo.compile({
     fullRest: /\.{1440,}/,
     work: /x+/,
@@ -51,7 +54,7 @@ module.exports = function (scheduleData) {
       // TODO: 勞資協商前是 11 小時
       // 遇到超過輪班間隔底限的休息時斷，就視為前一班已經結束。
       // 因為把前後兩班視成一班對雇主完全沒好處，應不會有人這樣排。
-      if (token.value.length >= 8 * 60) {
+      if (token.value.length >= opts.min_between_shift * 60) {
         pushWorkTokensIfNotEmpty()
         tokens.push(token)
       } else {
