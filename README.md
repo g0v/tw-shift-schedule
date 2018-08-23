@@ -7,6 +7,11 @@
 
 `npm i tw-shift-schedule`
 
+這是班表小幫手的核心檢驗邏輯。相關的專案有：
+
+* 前端介面：https://github.com/g0v/tw-shift-schedule-ui
+* REST API：https://github.com/poga/tw-shift-schedule-api
+
 ## Usage
 
 ```javascript
