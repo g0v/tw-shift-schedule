@@ -48,3 +48,18 @@ tape('last shift worked first', function (t) {
   )
   t.end()
 })
+
+tape('正確換班', function (t) {
+  let schedules = create(2, [
+    { from: '2018-09-08 09:00:00', to: '2018-09-08 18:00:00', required: 1 },
+    { from: '2018-09-08 19:00:00', to: '2018-09-09 07:00:00', required: 1 }
+  ])
+
+  t.same(schedules,
+    [
+      [['2018-09-08 09:00:00', '2018-09-08 18:00:00']],
+      [['2018-09-08 19:00:00', '2018-09-09 07:00:00']]
+    ]
+  )
+  t.end()
+})
