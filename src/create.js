@@ -7,7 +7,7 @@
 const Schedule = require('./schedule')
 const validate = require('./validate')
 
-function create(employeeCount, shifts, transformed) {
+function create (employeeCount, shifts, transformed) {
   let schedules = []
   let employees = []
 
