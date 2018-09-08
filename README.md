@@ -112,6 +112,17 @@ const Causes = {
 }
 ```
 
+#### `shift.create(employeeCount, shifts)`
+
+根據給定的資訊排出合法的班表。
+
+```javascript
+let schedules = create(1, [
+  { from: '2018-09-08 09:00:00', to: '2018-09-08 15:00:00', required: 1 }
+])
+// schedule == [[['2018-09-08 09:00:00', '2018-09-08 15:00:00']]]
+```
+
 ## Internal Data Structure
 
 此套件將班表編碼成如下格式：
