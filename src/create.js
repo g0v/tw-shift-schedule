@@ -49,7 +49,9 @@ function create (employeeCount, shifts, transformed) {
     }
 
     if (!ok) {
-      throw new Error(`Unable to schedule: ${JSON.stringify(shifts[i])}`)
+      let e = new Error('Unable to schedule')
+      e.pos = shifts[i]
+      throw e
     }
   }
   return schedules
